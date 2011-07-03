@@ -1,13 +1,13 @@
 JUNK_FILES=$(FINAL).* *.aux *.log styles/*.aux
 SOURCE=book
-WEBSITE=$(USER)@mongrel2.org:/var/www/mongrel2.org/static/
-FINAL=book-final
+WEBSITE=$(USER)@learncodethehardway.org:/var/www/learncodethehardway.org
+FINAL=LearnCTheHardWay-preview
 
 book:
 	dexy
 	cp Makefile output/
 	cp pastie.sty output/
-	${MAKE} -C output clean book-final.pdf
+	${MAKE} -C output clean $(FINAL).pdf
 	rm -rf output/*.dvi output/*.pdf
 	${MAKE} -C output $(FINAL).pdf
 
@@ -17,9 +17,9 @@ $(FINAL).dvi:
 	cp $(SOURCE).tex $(FINAL).tex
 	latex -halt-on-error $(FINAL).tex
 
-html:
-	htlatex $(FINAL).tex
-	tidy -quiet -ashtml -omit -ic -m $(FINAL).html || true
+html: 
+	cd output && htlatex $(FINAL).tex
+	cd output && tidy -quiet -ashtml -omit -ic -m $(FINAL).html || true
 	
 $(FINAL).pdf: $(FINAL).dvi
 	dvipdf $(FINAL).dvi
@@ -34,8 +34,8 @@ clean:
 
 release: clean $(FINAL).pdf draft $(FINAL).pdf sync
 
-sync:
-	rsync -vz $(FINAL).pdf $(WEBSITE)/book/LearnCTheHardWay-preview.pdf
-	rsync -vz $(FINAL).html $(WEBSITE)/book/LearnCTheHardWay.html
-	rsync -vz $(FINAL).css $(FINAL)[0-9]*.html $(WEBSITE)/book/
+sync: book html
+	rsync -vz output/$(FINAL).pdf $(WEBSITE)/$(FINAL).pdf
+	rsync -vz output/$(FINAL).html $(WEBSITE)/index.html
+	rsync -vz output/$(FINAL).css $(WEBSITE)/
 

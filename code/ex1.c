@@ -1,4 +1,4 @@
-void main()
+int main()
 {
     puts("Hello world.");
 }
