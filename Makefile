@@ -33,6 +33,6 @@ release: clean $(FINAL).pdf draft $(FINAL).pdf sync
 
 sync: book html
 	rsync -vz output/$(FINAL).pdf $(WEBSITE)/$(FINAL).pdf
-	rsync -vz output/$(FINAL).html $(WEBSITE)/index.html
+	rsync -vz output/$(FINAL).html $(WEBSITE)/book.html
 	rsync -vz output/$(FINAL).css $(WEBSITE)/
 
