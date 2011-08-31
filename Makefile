@@ -1,6 +1,6 @@
 JUNK_FILES=$(FINAL).* *.aux *.log styles/*.aux
 SOURCE=book
-WEBSITE=$(USER)@learncodethehardway.org:/var/www/learncodethehardway.org
+WEBSITE=/var/www/learncodethehardway.org/c/
 FINAL=LearnCTheHardWay-preview
 
 book:
