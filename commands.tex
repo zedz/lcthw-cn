@@ -38,6 +38,14 @@
 }
 { \end{quote} \end{note} }
 
+\newenvironment{Terminal}[1]
+{
+    \begin{source}
+    \caption{\hfill\it #1}
+    \sffamily\small
+}
+{\end{source}}
+
 \newenvironment{code}[1]
 {
     \begin{source}
