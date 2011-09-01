@@ -129,7 +129,7 @@ color.  In this case, a perfectly harmless seeming program has a ton of
 "Invalid read of size 1".  If you kept running it you'd find other errors pop
 up at random.
 
-Now, in the context of the entire program in that example, this function
+Now, in the context of the entire program in the original \krc example, this function
 will function correctly.  However, the second this function is called with
 \ident{longest} and \ident{line} uninitialized, initialized wrong, 
 without a trailing \verb|'\0'| character, then you'll hit difficult to debug
