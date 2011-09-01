@@ -1,0 +1,166 @@
+\chapter{Deconstructing \krc}
+
+When I was a kid I read this awesome book called "The C Programming Language"
+by the language's creators, Brian Kernighan and Dennis Ritchie.  This book 
+taught me and many people of my generation, and a generation before, how to
+write C code.  You talk to anyone, whether they know C or not, and they'll
+say, "You can't beat \krc. It's the best C book."  It is an established
+piece of programmer lore that is not soon to die.
+
+I myself believed that until I started writing this book. You see, \krc is
+actually riddled with bugs and bad style.  Its age is no excuse. These were
+bugs when they wrote the first printing, and the 42nd printing.  I hadn't
+actually realized just how bad most of the code was in this book.  After
+reading through it for just an hour I decided that it needs to be taken down
+from its pedestal and relegated to history rather than vaunted as state of the
+art.
+
+I believe it is time to lay this book to rest, but I want to use it as an
+exercise for you in finding hacks, attacks, defects, and bugs by going through
+\krc to break all the code.  That's right, you are going to destroy this
+sacred cow for me, and you're going to have no problem doing it.  When you are
+done doing this, you will have a finely honed eye for defect.  You will also
+have an informed opinion of the book's actual quality, and will be able to make
+your own decisions on how to use the knowledge it contains.
+
+In this chapter we will use all the knowledge you've gained from
+this book, and spend it reviewing the code in \krc.  What we will do is
+take many pieces of code from the book, find all the bugs in it, and write
+a unit test that \emph{exercises} the bugs.  We'll then run this test under
+valgrind to get statistics and data, and then we'll fix the bugs with a redesign.
+
+This will obviously be a long chapter so I'm going to only do a handful of
+these and then I'm going to sick you on the rest of the book like a bloodhound.
+I'll provide a guide that is each page, with the code on it, and hints to the
+bugs that it has.  Your job is to then tear that piece of code apart and try to
+think like an attacker trying to break the code.
+
+\begin{aside}{Warning For The Fanboys}
+As you read this, if you feel that I am being disrespectful to the
+authors, then that's not my intent.  I respect the authors more than
+anything you know and owe them a debt of gratitude for writing their book.
+My criticisms here are both for educational purposes of teaching people
+\emph{modern} C code, and to destroy the belief in their work as a 
+item of worship that cannot be questioned.
+
+However, if when you read this you have feelings of me insulting \emph{you}
+then just stop reading.  You will gain nothing from this chapter but personal
+grief because you've attached your identity to \krc and my criticisms will
+only be taken personally.
+\end{aside}
+
+\section{An Overall Critique Of Correctness}
+
+The primary problem \krc has is its view of "correctness" comes from
+the first system it was used on: \emph{Unix}.  In the world of Unix software
+programs have a particular set of properties:
+
+\begin{enumerate}
+\item Programs are started and then exit, making resource allocation easier.
+\item Most functions are only called by other parts of the same program in set ways.
+\item The inputs to the program are limited to "expert" restricted users.
+\end{enumerate}
+
+In the context of this 1970's computing style, \krc is actually correct.  As
+long as only trusted people run complete cohesive programs that exit and clean
+up all their resources then their code is fine.
+
+Where \krc runs into problems is when the functions or code snippets are taken
+\emph{out of the book} and used in other programs.  Once you take many of these
+code snippets and try use them in some other program they fall apart.  They then
+have blatant buffer overflows, bugs, and problems that a beginner will trip over.
+
+Another problem is that software these days doesn't exit right away, but instead
+it stays running for long periods of time because they're servers, desktop applications
+and mobile applications.  The old style of "leaving the cleanup to the OS" doesn't
+work in the modern world the way it did back in the day.
+
+The final problem though is that no software lives in a vacuum anymore. Software
+is now frequently attacked by people over network connections in an attempt to
+gain special privilege or simple street cred.  The idea that "nobody will ever do
+that" is dead, and actually that's probably the first thing somebody will do.
+
+The best way to summarize the problem of \krc "correctness" is with an example
+from English.  Imagine if you have the pair of sentences, "Jack and Jill went up the hill.
+He fell down."  Well, from context clues you know that "He" means Jack.  However,
+if you have that sentence on its own it's not clear who "He" is.  Now, if you put
+that sentence at the end of another sentence you can get an unclear
+pronoun reference: "Jack and Frank went up the hill. He fell down."  Which "He"
+are we talking about in that sentence.
+
+This is how the code in \krc works.  As long as that code is not used in other
+programs without serious analysis of the entire software then it works.  The second
+you take many of the functions out and try to use them in other systems they
+fall apart.  And, what's the point of a book full of code you can't actually
+use in your own programs?
+
+
+\subsection{A First Demonstration Defect}
+
+Following function is found in the very first chapter and is an example
+of a "copy" function to copy two strings.  Here's a new source file
+to demonstrate the defects in this function.
+
+\begin{code}{exercise-1.10-1.c}
+<< d['code/krc/1.10-1.c|pyg|l'] >>
+\end{code}
+
+In the above example, I'm doing something that is fairly common: switching from
+using stack allocation to heap allocation with \ident{malloc}.  What happens is,
+typically \ident{malloc} returns memory from the heap, and so the bytes after
+it are not initialized.  Then you see me use a loop to accidentally initialize
+it wrong.  Before the switch to heap memory, this program probably ran just fine
+because the stack allocated memory will probably have a \verb|'\0'| character
+at the end on accident.
+
+What's the effect of running this new program with \ident{copy} used wrong?
+
+\begin{code}{exercise-1.10-1.c Valgrind Failures}
+<< d['code/krc/1.10-1.sh|pyg|l'] >>
+\end{code}
+
+As you've already learned, Valgrind will show you all of your sins in full
+color.  In this case, a perfectly harmless seeming program has a ton of
+"Invalid read of size 1".  If you kept running it you'd find other errors pop
+up at random.
+
+Now, in the context of the entire program in that example, this function
+will function correctly.  However, the second this function is called with
+\ident{longest} and \ident{line} uninitialized, initialized wrong, 
+without a trailing \verb|'\0'| character, then you'll hit difficult to debug
+errors.
+
+This is the failing of the book.  While the code works in the book, it does
+\emph{not} work in many other situations leading to difficult to spot defects,
+and those are the worst kind of defects for a beginner (or expert).
+Instead of code that only works in this delicate balance, we will strive to
+create code that has a higher probability of working in any situation.
+
+
+\subsection{Stylistic Issues}
+
+A more minor critique of the book is that the style is not only old, but just
+error prone and annoyingly "clever".  Take the code you just saw again and look
+at the \ident{while-loop} in \ident{copy}.  There's no reason to write this
+loop this way, as the compiler can just as easily work with a \ident{for-loop}
+and not doing the clever triple equality trick.  It also uses an \ident{extern}
+global which is bad form in modern C code.  Finally it has a \verb|#define|
+where new code should use a \verb|const int| instead.
+
+While the book could be forgiven for this because of its age, it has been
+republished in this form \emph{42 times}, and it was updated for the ANSI
+standard.  At some point in its history you'd think the authors or some
+publisher ghostwriter could have been bothered to update the book's style.
+
+However, this is the problem with sacred cows.  Once they become idols of
+worship people are reluctant to question them or modify them.
+
+In the rest of this chapter though we will be modernizing the code in \krc
+to fit the style you've been learning throughout this book.  It will be
+more verbose, but it will be clearer and less error prone because of
+this slight increase in verbosity.
+
+
+\section{Chapter 1 Examples}
+
+Now we begin...
