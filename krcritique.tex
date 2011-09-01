@@ -10,10 +10,10 @@ piece of programmer lore that is not soon to die.
 I myself believed that until I started writing this book. You see, \krc is
 actually riddled with bugs and bad style.  Its age is no excuse. These were
 bugs when they wrote the first printing, and the 42nd printing.  I hadn't
-actually realized just how bad most of the code was in this book.  After
-reading through it for just an hour I decided that it needs to be taken down
-from its pedestal and relegated to history rather than vaunted as state of the
-art.
+actually realized just how bad most of the code was in this book and recommende
+it to many people.  After reading through it for just an hour I decided that it
+needs to be taken down from its pedestal and relegated to history rather than
+vaunted as state of the art.
 
 I believe it is time to lay this book to rest, but I want to use it as an
 exercise for you in finding hacks, attacks, defects, and bugs by going through
@@ -109,7 +109,12 @@ In the above example, I'm doing something that is fairly common: switching from
 using stack allocation to heap allocation with \ident{malloc}.  What happens is,
 typically \ident{malloc} returns memory from the heap, and so the bytes after
 it are not initialized.  Then you see me use a loop to accidentally initialize
-it wrong.  Before the switch to heap memory, this program probably ran just fine
+it wrong.  This is a common defect, and one of the reasons we avoided class C strings
+in this book.  You could also have this bug in programs that read from files,
+sockets, or other external resources.  It is a \emph{very} common bug, probably
+the most common in the world.
+
+Before the switch to heap memory, this program probably ran just fine
 because the stack allocated memory will probably have a \verb|'\0'| character
 at the end on accident.
 
