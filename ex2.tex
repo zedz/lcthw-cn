@@ -18,19 +18,119 @@ don't have to specify every stupid little thing about your C program to get
 it to build.  I won't do that in this exercise, but after you've been using
 "baby make" for a while, I'll show you "master make".
 
-... explain basic usage of make to just build single files ...
+\section{Using Make}
 
-... go into a simple makefile ...
+The first stage of using make is to just use it to build programs
+it already knows how to build.  Make has decades of knowledge on building
+a wide variety of files from other files.  In the last exercise you
+did this already using commands like this:
 
-... show how to run the simple makefile ...
+\begin{Terminal}{Building ex1 with -Wall}
+\begin{lstlisting}
+$ make ex1
+# or this one too
+$ CFLAGS="-Wall" make ex1
+\end{lstlisting}
+\end{Terminal}
+
+In the first command you're telling make, "I want a file named ex1 to 
+be created."  Make then does the following:
+
+\begin{enumerate}
+\item Does the file \file{ex1} exist already?
+\item No. Ok, is there another file that starts with \file{ex1}?
+\item Yes, it's called \file{ex1.c}. Do I know how to build \file{.c} files?
+\item Yes, I run this command \verb|cc ex1.c   -o ex1| to build them.
+\item I shall make you one \file{ex1} by using \file{cc} to build it from \file{ex1.c}.
+\end{enumerate}
+
+The second command in the listing above is a way to pass "modifiers" to the
+make command.  If you're not familiar with how the Unix shell works, you can
+create these "environment variables" which will get picked up by programs
+you run.  Sometimes you do this with a command like \verb|export CFLAGS="-Wall"| depend on the shell you use.  You can however also just put them before
+the command you want to run, and that environment variable will be set
+only while that command runs.
+
+In this example I did \verb|CFLAGS="-Wall" make ex1| so that it would
+add the command line option \verb|-Wall| to the \verb|cc| command that
+\ident{make} normally runs.  That command line option tells the compiler
+\ident{cc} to report all warnings (which in a sick twist of fate isn't
+actually all the warnings possible).
+
+You can actually get pretty far with just that way of using \ident{make},
+but let's get into making a \file{Makefile} so you can understand
+make a little better.  To start off, create a file with just this
+in it:
+
+\begin{code}{A simple Makefile}
+<< d['code/ex2.1.Makefile|dexy'] >>
+\end{code}
+
+This file is showing you some new stuff with make.  First we set
+\ident{CFLAGS} in the file so we never have to set it again, as well
+as adding the \verb|-g| flag to get debugging.  Then we have a 
+section named \ident{clean} which tells make how to clean up our
+little project.
+
+Make sure it's in the same directory as your \file{ex1.c} file, and then
+run these commands:
+
+\begin{Terminal}{Running a simple Makefile}
+\begin{lstlisting}
+$ make clean
+$ make ex1
+\end{lstlisting}
+\end{Terminal}
 
 \section{What You Should See}
+
+If that worked then you should see this:
+
+\begin{Terminal}{Full build with Makefile}
+\begin{lstlisting}
+<< d['code/ex2.out|dexy'] >>
+\end{lstlisting}
+\end{Terminal}
+
+Here you can see that I'm running \verb|make clean| which tells
+make to run our \ident{clean} target.  Go look at the Makefile
+again and you'll see that under this I indent and then I put
+the shell commands I want \ident{make} to run for me.  You could
+put as many commands as you wanted in there, so it's a great
+automation tool.
+
+Notice also that, even though we don't mention \file{ex1} in the
+\file{Makefile}, \ident{make} still knows how to build it \emph{plus}
+use our special settings.
 
 
 \section{How To Break It}
 
+That should be enough to get you started, but first lets break this 
+make file in a particular way so you can see what happens.  Take
+the line \verb|rm -f ex1| and dedent it (move it all the way left)
+so you can see what happens.  Rerun \verb|make clean| and you should
+get something like this:
+
+\begin{Terminal}{Bad make run}
+\begin{lstlisting}
+$ make clean
+Makefile:4: *** missing separator.  Stop.
+\end{lstlisting}
+\end{Terminal}
+
+Always remember to indent, and if you get weird errors like this
+then double check you're consistently using tab characters since
+some make variants are very picky.
 
 \section{Extra Credit}
 
-
+\begin{enumerate}
+\item Create an \verb|all: ex1| target that will build \file{ex1} with
+    just the command \verb|make|.
+\item Read \verb|man make| to find out more information on how to run it.
+\item Research Makefiles online and see if you can improve this one even more.
+\item Find a \file{Makefile} in another C project and try to understand
+    what it's doing.
+\end{enumerate}
 
