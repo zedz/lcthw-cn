@@ -148,7 +148,7 @@ A more minor critique of the book is that the style is not only old, but just
 error prone and annoyingly "clever".  Take the code you just saw again and look
 at the \ident{while-loop} in \ident{copy}.  There's no reason to write this
 loop this way, as the compiler can just as easily work with a \ident{for-loop}
-and not doing the clever triple equality trick.  It also uses an \ident{extern}
+and without the clever triple-equality trick.  It also uses an \ident{extern}
 global which is bad form in modern C code.  Finally it has a \verb|#define|
 where new code should use a \verb|const int| instead.
 
@@ -156,7 +156,6 @@ While the book could be forgiven for this because of its age, it has been
 republished in this form \emph{42 times}, and it was updated for the ANSI
 standard.  At some point in its history you'd think the authors or some
 publisher ghostwriter could have been bothered to update the book's style.
-
 However, this is the problem with sacred cows.  Once they become idols of
 worship people are reluctant to question them or modify them.
 
