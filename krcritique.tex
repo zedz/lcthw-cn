@@ -86,7 +86,7 @@ He fell down."  Well, from context clues you know that "He" means Jack.  However
 if you have that sentence on its own it's not clear who "He" is.  Now, if you put
 that sentence at the end of another sentence you can get an unclear
 pronoun reference: "Jack and Frank went up the hill. He fell down."  Which "He"
-are we talking about in that sentence.
+are we talking about in that sentence?
 
 This is how the code in \krc works.  As long as that code is not used in other
 programs without serious analysis of the entire software then it works.  The second
@@ -97,22 +97,22 @@ use in your own programs?
 
 \subsection{A First Demonstration Defect}
 
-Following function is found in the very first chapter and is an example
-of a "copy" function to copy two strings.  Here's a new source file
-to demonstrate the defects in this function.
+The following \ident{copy} function is found in the very first chapter and is
+an example of copying two strings.  Here's a new source file to demonstrate the
+defects in this function.
 
 \begin{code}{exercise-1.10-1.c}
 << d['code/krc/1.10-1.c|pyg|l'] >>
 \end{code}
 
 In the above example, I'm doing something that is fairly common: switching from
-using stack allocation to heap allocation with \ident{malloc}.  What happens is,
-typically \ident{malloc} returns memory from the heap, and so the bytes after
-it are not initialized.  Then you see me use a loop to accidentally initialize
-it wrong.  This is a common defect, and one of the reasons we avoided class C strings
-in this book.  You could also have this bug in programs that read from files,
-sockets, or other external resources.  It is a \emph{very} common bug, probably
-the most common in the world.
+using stack allocation to heap allocation with \ident{malloc}.  What happens
+is, typically \ident{malloc} returns memory from the heap, and so the bytes
+after it are not initialized.  Then you see me use a loop to accidentally
+initialize it wrong.  This is a common defect, and one of the reasons we
+avoided classic style C strings in this book.  You could also have this bug in
+programs that read from files, sockets, or other external resources.  It is a
+\emph{very} common bug, probably the most common in the world.
 
 Before the switch to heap memory, this program probably ran just fine
 because the stack allocated memory will probably have a \verb|'\0'| character
@@ -130,7 +130,7 @@ color.  In this case, a perfectly harmless seeming program has a ton of
 up at random.
 
 Now, in the context of the entire program in the original \krc example, this function
-will function correctly.  However, the second this function is called with
+will work correctly.  However, the second this function is called with
 \ident{longest} and \ident{line} uninitialized, initialized wrong, 
 without a trailing \verb|'\0'| character, then you'll hit difficult to debug
 errors.
