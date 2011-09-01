@@ -1,0 +1,19 @@
+# edit ex3.c to break printf
+$ make ex3
+cc "-Wall"    ex3.c   -o ex3
+ex3.c: In function 'main':
+ex3.c:8: warning: too few arguments for format
+ex3.c:5: warning: unused variable 'age'
+$ ./ex3
+I am -919092456 years old.
+I am 72 inches tall.
+# edit ex3.c again to fix printf, but don't init age
+$ make ex3
+cc "-Wall"    ex3.c   -o ex3
+ex3.c: In function 'main':
+ex3.c:8: warning: 'age' is used uninitialized in this function
+$ ./ex3
+I am 0 years old.
+I am 72 inches tall.
+$ 
+

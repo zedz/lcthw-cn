@@ -46,10 +46,11 @@ be created."  Make then does the following:
 
 The second command in the listing above is a way to pass "modifiers" to the
 make command.  If you're not familiar with how the Unix shell works, you can
-create these "environment variables" which will get picked up by programs
-you run.  Sometimes you do this with a command like \verb|export CFLAGS="-Wall"| depend on the shell you use.  You can however also just put them before
-the command you want to run, and that environment variable will be set
-only while that command runs.
+create these "environment variables" which will get picked up by programs you
+run.  Sometimes you do this with a command like \verb|export CFLAGS="-Wall"|
+depend on the shell you use.  You can however also just put them before the
+command you want to run, and that environment variable will be set only while
+that command runs.
 
 In this example I did \verb|CFLAGS="-Wall" make ex1| so that it would
 add the command line option \verb|-Wall| to the \verb|cc| command that

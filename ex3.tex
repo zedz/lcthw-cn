@@ -1,28 +1,80 @@
 \chapter{Exercise 3: Formatted Printing}
 
+Keep that \file{Makefile} around since it'll help you spot errors
+and we'll be adding to it when we need to automate more things.
+
 Many programming languages use the C way of formatting output, so let's try it:
 
 \begin{code}{ex3.c}
 << d['code/ex3.c|pyg|l'] >>
 \end{code}
 
-Once you have that, do the usual \shell{make ex3} to build it and run it.
+Once you have that, do the usual \shell{make ex3} to build it and run it. 
+Make sure you \emph{fix all warnings}.
 
-This exercise has a whole lot going on in a small amount of code.  First you're
-including another "header file" called \file{stdio.h}, then you're using a variable 
-named \ident{age} and setting it to 10.  Then you're printing it out using the
-function \ident{printf} and a format string similar to what you would use
-in Python.
+This exercise has a whole lot going on in a small amount of code so 
+let's break it down:
 
-... explain this ...
+\begin{enumerate}
+\item First you're including another "header file" called \file{stdio.h}. This tells the compiler that you're going to use the "standard Input/Output functions".  One of those is \ident{printf}.
+\item Then you're using a variable named \ident{age} and setting it to 10.
+\item Next you're using a variable \ident{height} and setting it to 72.
+\item Then you use the \ident{printf} function to print the age and height
+     of the tallest 10 year old on the planet.
+\item In the \ident{printf} you'll notice you're passing in a string, and
+    it's a format string like in many other languages.
+\item After this format string, you put the variables that should be 
+    "replaced" into the format string by printf.
+\end{enumerate}
+
+The result of doing this is you are handing \ident{printf} some variables
+and it is constructing a new string then printing that new string to the
+terminal.
 
 \section{What You Should See}
 
+When you do the whole build you should see something like this:
+
+\begin{Terminal}{Building and running ex3.c}
+\begin{lstlisting}
+<< d['code/ex3.out|dexy'] >>
+\end{lstlisting}
+\end{Terminal}
+
+Pretty soon I'm going to stop telling you to run \file{make} and what
+the build looks like, so please make sure you're getting this right
+and that it's working.
 
 \section{How To Break It}
 
+Try a few of these ways to break this program, which may or may
+not cause it to crash on your computer:
+
+\begin{enumerate}
+\item Take the \ident{age} variable out of the first \ident{printf} call
+    then recompile. You should get a couple of warnings.
+\item Run this new program and it will either crash, or print out a really
+    crazy age.
+\item Put the printf back the way it was, and then don't set \ident{age}
+    to an initial value by changing that line to \verb|int age;| then
+    rebuild and run again.
+\end{enumerate}
+
+
+\begin{Terminal}{Breaking ex3.c}
+\begin{lstlisting}
+<< d['code/ex3.bad.out|dexy'] >>
+\end{lstlisting}
+\end{Terminal}
 
 \section{Extra Credit}
 
-
+\begin{enumerate}
+\item Find as many other ways to break \file{ex3.c} as you can.
+\item Run \verb|man 3 printf| and read about the other '\%' format
+    characters you can use.  These should look familiar if you used
+    them in other languages (printf is where they come from).
+\item Add \file{ex3} to your \file{Makefile}'s \ident{all} list.  Use this
+    to \verb|make clean all| and build all your exercises so far.
+\end{enumerate}
 
