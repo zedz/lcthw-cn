@@ -19,7 +19,6 @@ $(FINAL).pdf:
 
 html: 
 	cd output && htlatex $(FINAL).tex
-	cd output && tidy -quiet -ashtml -omit -ic -m $(FINAL).html || true
 	
 view: $(FINAL).pdf
 	evince $(FINAL).pdf
