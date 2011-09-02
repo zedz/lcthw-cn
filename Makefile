@@ -1,7 +1,7 @@
 JUNK_FILES=$(FINAL).* *.aux *.log styles/*.aux
 SOURCE=book
 WEBSITE=/var/www/learncodethehardway.org/c/
-FINAL=LearnCTheHardWay-preview
+FINAL=learn-c-the-hard-way
 
 book:
 	dexy
@@ -18,7 +18,7 @@ $(FINAL).pdf:
 	pdflatex -halt-on-error $(FINAL).tex
 
 html: 
-	cd output && htlatex $(FINAL).tex
+	cd output && htlatex $(FINAL).tex "html,index=1,2,next,fn-in"
 	
 view: $(FINAL).pdf
 	evince $(FINAL).pdf
@@ -32,6 +32,6 @@ release: clean $(FINAL).pdf draft $(FINAL).pdf sync
 
 sync: book html
 	rsync -vz output/$(FINAL).pdf $(WEBSITE)/$(FINAL).pdf
-	rsync -vz output/$(FINAL).html $(WEBSITE)/book.html
-	rsync -vz output/$(FINAL).css $(WEBSITE)/
+	rsync -vz output/$(FINAL).html $(WEBSITE)/book/index.html
+	rsync -vz output/*.html output/$(FINAL).css $(WEBSITE)/book/
 
