@@ -4,6 +4,6 @@
     "*.c|pyg|l": {},
     "*.sh|pyg|l": {},
     "*.conf|dexy": {},
-    "*Makefile|dexy": {},
+    "*.Makefile|dexy": {},
     "*.out|dexy": {}
 }
