@@ -4,17 +4,13 @@
 
 #define MAXLINE 10 // in the book this is 1000
 
-char *line;
-char *longest;
-
-void copy(void)
+void copy(char to[], char from[])
 {
     int i;
-    extern char *line, *longest;
 
     i = 0;
-
-    while((longest[i] = line[i]) != '\0') ++i;
+    while((to[i] = from[i]) != '\0')
+        ++i;
 }
 
 int main(int argc, char *argv[])
@@ -22,8 +18,9 @@ int main(int argc, char *argv[])
     int i;
 
     // use heap memory as many modern systems do
-    line = malloc(MAXLINE);
-    longest = malloc(MAXLINE);
+    char *line = malloc(MAXLINE);
+    char *longest = malloc(MAXLINE);
+
     assert(line != NULL && longest != NULL && "memory error");
 
     // initialize it but make a classic "off by one" error
@@ -32,7 +29,7 @@ int main(int argc, char *argv[])
     }
 
     // cause the defect
-    copy();
+    copy(longest, line);
 
     free(line);
     free(longest);

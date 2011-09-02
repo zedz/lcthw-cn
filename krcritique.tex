@@ -101,8 +101,8 @@ The following \ident{copy} function is found in the very first chapter and is
 an example of copying two strings.  Here's a new source file to demonstrate the
 defects in this function.
 
-\begin{code}{exercise-1.10-1.c}
-<< d['code/krc/1.10-1.c|pyg|l'] >>
+\begin{code}{exercise-1.9-1.c}
+<< d['code/krc/1.9-1.c|pyg|l'] >>
 \end{code}
 
 In the above example, I'm doing something that is fairly common: switching from
@@ -116,12 +116,15 @@ programs that read from files, sockets, or other external resources.  It is a
 
 Before the switch to heap memory, this program probably ran just fine
 because the stack allocated memory will probably have a \verb|'\0'| character
-at the end on accident.
+at the end on accident.  In fact, it would appear to run find almost always
+since it just runs and exits quickly.
 
 What's the effect of running this new program with \ident{copy} used wrong?
 
-\begin{code}{exercise-1.10-1.c Valgrind Failures}
-<< d['code/krc/1.10-1.sh|pyg|l'] >>
+\begin{code}{exercise-1.9-1.c Valgrind Failures}
+\begin{lstlisting}
+<< d['code/krc/1.9-1.out|dexy'] >>
+\end{lstlisting}
 \end{code}
 
 As you've already learned, Valgrind will show you all of your sins in full
@@ -148,9 +151,19 @@ A more minor critique of the book is that the style is not only old, but just
 error prone and annoyingly "clever".  Take the code you just saw again and look
 at the \ident{while-loop} in \ident{copy}.  There's no reason to write this
 loop this way, as the compiler can just as easily work with a \ident{for-loop}
-and without the clever triple-equality trick.  It also uses an \ident{extern}
-global which is bad form in modern C code.  Finally it has a \verb|#define|
-where new code should use a \verb|const int| instead.
+and without the clever triple-equality trick.  The original code also
+has a while-loop without braces, but an if-statement with braces, which
+leads to even more confusion:
+
+\begin{code}{Braces Are Free, Use Them}
+<< d['code/krc/1.9-2.c|pyg|l'] >>
+\end{code}
+
+This code is \emph{incredibly} error prone because you can't easily tell
+where the pair of if-statements and the while-loop are paired.  A quick
+glance makes it seem like this while-loop will loop both if-statements,
+but it doesn't.  In modern C code you would instead just use braces all
+the time and avoid the confusion completely.
 
 While the book could be forgiven for this because of its age, it has been
 republished in this form \emph{42 times}, and it was updated for the ANSI
