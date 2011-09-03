@@ -19,6 +19,7 @@ $(FINAL).pdf:
 
 html: 
 	cd output && htlatex $(FINAL).tex "html,index=1,2,next,fn-in"
+	cat fixes.css >> output/learn-c-the-hard-way.css
 	
 view: $(FINAL).pdf
 	evince $(FINAL).pdf
