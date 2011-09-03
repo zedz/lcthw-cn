@@ -1,8 +1,8 @@
 $ make ex6
 cc -Wall -g    ex6.c   -o ex6
-ex6.c: In function ‘main’:
-ex6.c:19: warning: format ‘%s’ expects type ‘char *’, but argument 2 has type ‘int’
-ex6.c:19: warning: format ‘%c’ expects type ‘int’, but argument 3 has type ‘char *’
+ex6.c: In function 'main':
+ex6.c:19: warning: format '%s' expects type 'char *', but argument 2 has type 'int'
+ex6.c:19: warning: format '%c' expects type 'int', but argument 3 has type 'char *'
 $ ./ex6
 You are 100 miles away.
 You have 2.345000 levels of power.
