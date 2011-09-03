@@ -1,13 +1,78 @@
-\chapter{Exercise 6}
+\chapter{Exercise 6: Types Of Variables}
 
+You should be getting a grasp of how a simple C program is structured,
+so let's do the next simplest thing which is making some variables 
+of different types:
+
+\begin{code}{ex6.c}
+<< d['code/ex6.c|pyg|l'] >>
+\end{code}
+
+In this program we're declaring variables of different types 
+and then printing them with different \ident{printf} format
+strings.
 
 \section{What You Should See}
 
+Your output should look like mine, and you can start to see how
+the format strings for C are similar to Python and other languages.
+They've been around for a long time.
+
+\begin{code}{ex6 output}
+\begin{lstlisting}
+<< d['code/ex6.out|dexy'] >>
+\end{lstlisting}
+\end{code}
+
+What you can see is we have a set of "types", which are ways of
+telling the C compiler what each variable should represent, and then
+format strings to match different types.  Here's the breakdown
+of how they match up:
+
+\begin{description}
+\item[Integers] You declare Integers with the \ident{int} keyword, and 
+    print them with \verb|%d|.
+\item[Floating Point] Declared with \ident{float} or \ident{double} depending
+    on how big they need to be (double is bigger), and printed with 
+    \verb|%f|.
+\item[Character] Declared with \ident{char}, written with a \verb|'| (single-quote)
+    character around the char, and then printed with \verb|%c|.
+\item[String (Array of Characters)] Declared with \ident[char name\[\]], 
+    written with \verb|"| characters, and printed with \verb|%s|.
+\end{description}
+
+You'll notice that C makes a distinction between single-quote for \ident{char}
+and double-quote for \ident{char[]} or strings.  A short-hand way to write
+out a type, mostly because sometimes the variable name is in the middle, is
+to do like \ident{char[]} when we mean \ident{char SOMENAME[]}.
 
 \section{How To Break It}
 
+You can easily break this program by passing the wrong thing to the 
+printf statements.  For example, if you take the line that prints
+my name, but put the \ident{initial} variable before the \ident{first\_name}
+in the arguments, you'll get a bug.  Make that change and the compiler will
+yell at you, then when you run it you *might* get a "Segmentation fault"
+like I did:
+
+\begin{code}{ex6 explosion}
+\begin{lstlisting}
+<< d['code/ex6.bad.out|dexy'] >>
+\end{lstlisting}
+\end{code}
+
+Run this change under Valgrind too to see what it tells you about
+the error "Invalid read of size 1".
 
 \section{Extra Credit}
 
-
+\begin{enumerate}
+\item Come up with other ways to break this C code by changing the
+    \ident{printf}, then fix them.
+\item Go search for "printf formats" and try using a few of the
+    more exotic ones.
+\item Research how many different ways you can write a number. Try
+    octal, hexadecimal, and others you can find.
+\item Try printing an empty string that's just \verb|""|.
+\end{enumerate}
 
