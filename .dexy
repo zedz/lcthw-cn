@@ -5,5 +5,7 @@
     "*.sh|pyg|l": {},
     "*.conf|dexy": {},
     "*.Makefile|dexy": {},
-    "*.out|dexy": {}
+    "*.out|dexy": {},
+    "*.css|jinja" : {  },
+    "*.cfg|jinja" : {  }
 }

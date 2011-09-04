@@ -18,8 +18,7 @@ $(FINAL).pdf:
 	pdflatex -halt-on-error $(FINAL).tex
 
 html: 
-	cd output && htlatex $(FINAL).tex "html,index=1,2,next,fn-in"
-	cat fixes.css >> output/learn-c-the-hard-way.css
+	cd output && htlatex $(FINAL).tex "book,index=1,2,next,fn-in"
 	sed -i -f clean.sed output/*.html
 	
 view: $(FINAL).pdf
