@@ -20,6 +20,7 @@ $(FINAL).pdf:
 html: 
 	cd output && htlatex $(FINAL).tex "book,index=1,2,next,fn-in"
 	sed -i -f clean.sed output/*.html
+	cat output/fixes.css >> output/$(FINAL).css
 	
 view: $(FINAL).pdf
 	evince $(FINAL).pdf
