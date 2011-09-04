@@ -1,13 +1,76 @@
-\chapter{Exercise 7}
+\chapter{Exercise 7: More Variables, Some Math}
+
+Let's get familiar with more things you can do with variables by 
+declaring various \ident{ints}, \ident{floats}, \ident{chars}, and 
+\ident{doubles}.  We'll then use these in various math expressions
+so you get introduced to C's basic math.
+
+\begin{code}{ex7.c}
+<< d['code/ex7.c|pyg|l'] >>
+\end{code}
+
+Here's what's going on in this little bit of nonsense:
+
+\begin{description}
+\item[ex7.c:1-4] The usual start of a C program.
+\item[ex7.c:5-6] Declare an \ident{int} and \ident{double} for some fake bug data.
+\item[ex7.c:8-9] Print out those two, so nothing new here.
+\item[ex7.c:11] Declare a huge number using a new type \ident{long} for storing
+    big numbers.
+\item[ex7.c:12-13] Print out that number using \verb|%ld| which adds a modifier
+    to the usual \verb|%d|. Adding 'l' (the letter ell) means "print this
+    as a long decimal".
+\item[ex7.c:15-17] Just more math and printing.
+\item[ex7.c:19-21] Craft up a depiction of your bug rate compared to the bugs in
+    the universe, which is a completely inaccurate calculation.  It so small
+    though that we have to use \verb|%e| to print it in scientific notation.
+\item[ex7.c:24] Make a character, with a special syntax \verb|'\0'| which creates
+    a 'nul byte' character.  This is effectively the number 0.
+\item[ex7.c:25] Multiply bugs by this character, which produces 0 for how much you
+    should care.  This demonstrates an ugly hack you find sometimes.
+\item[ex7.c:26-27] Print that out, and notice I've got a \verb|%%| (two percent
+        chars) so I can print a '\%' (percent) character.
+\item[ex7.c:28-30] The end of the \ident{main} function.
+\end{description}
+
+This bit of source is entirely just an exercise, and demonstrates how
+some math works.  At the end, it also demonstrates something you
+see in C, but not in many other languages.  To C, a "character" is just an
+integer.  It's a really small integer, but that's all it is.  This means
+you can do math on them, and a lot of software does just that, for good
+or bad.
+
+This last bit is your first glance at how C gives you direct access to 
+the machine.  We'll be exploring that more in later exercises.
 
 
 \section{What You Should See}
 
+As usual, here's what you should see for the output:
+
+\begin{code}{ex7 output}
+\begin{lstlisting}
+<< d['code/ex7.out|dexy'] >>
+\end{lstlisting}
+\end{code}
+
 
 \section{How To Break It}
 
+Again, go through this and try breaking the \ident{printf} by passing in
+the wrong arguments.  See what happens when you try to print out that
+\ident{nul\_byte} variable too with \verb|%s| vs. \verb|%c|.  When you
+break it, run it under \ident{Valgrind} to see what it says about your
+breaking attempts.
 
 \section{Extra Credit}
 
-
+\begin{enumerate}
+\item Make the number you assign to \ident{universe\_of\_defects} various 
+    sizes until you get a warning from the compiler.
+\item What do these really huge numbers actually print out?
+\item Change \ident{long} to \ident{unsigned long} and try to find 
+    the number that makes that one too big.
+\item Go search online to find out what \ident{unsigned} does.
+\end{enumerate}
 
