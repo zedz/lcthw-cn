@@ -18,7 +18,7 @@ $(FINAL).pdf:
 	pdflatex -halt-on-error $(FINAL).tex
 
 html: 
-	cd output && htlatex $(FINAL).tex "html,index=1,2,next,fn-in"
+	cd output && htlatex $(FINAL).tex "html,index=1,2,next,fn-in,charset=utf-8" " -cunihtf -utf8"
 	cat fixes.css >> output/learn-c-the-hard-way.css
 	sed -i -f clean.sed output/*.html
 	
