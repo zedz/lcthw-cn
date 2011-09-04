@@ -102,6 +102,12 @@ the shell commands I want \ident{make} to run for me.  You could
 put as many commands as you wanted in there, so it's a great
 automation tool.
 
+\begin{aside}{Did You Fix ex1.c?}
+If you fixed ex1.c to have \verb|#include <stdio.h>| then your
+output will not have the error about puts.  I have the error
+here because I didn't fix it.
+\end{aside}
+
 Notice also that, even though we don't mention \file{ex1} in the
 \file{Makefile}, \ident{make} still knows how to build it \emph{plus}
 use our special settings.
