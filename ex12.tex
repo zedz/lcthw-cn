@@ -1,13 +1,73 @@
-\chapter{Exercise 12}
+\chapter{Exercise 12: If, Else-If, Else}
 
+Something common in every language is the \ident{if-statement}, and
+C has one.  Here's code that uses an \ident{if-statement} to make 
+sure you enter only 1 or 2 arguments:
+
+\begin{code}{ex12.c}
+<< d['code/ex12.c|pyg|l'] >>
+\end{code}
+
+The format for the \ident{if-statement} is this:
+
+\begin{Verbatim}
+    if(TEST) {
+        CODE;
+    } else if(TEST) {
+        CODE;
+    } else {
+        CODE;
+    }
+\end{Verbatim}
+
+This is like most other languages except for some specific C 
+differences:
+
+\begin{enumerate}
+\item As mentioned before, the \ident{TEST} parts are false if they
+    evaluate to 0, and true otherwise.
+\item You have to put parenthesis around the \ident{TEST} elements,
+    while some other languages let you skip that.
+\item You don't need the \verb|{}| braces to enclose the code, but
+    it is \emph{very} bad form to not use them.  The braces make it
+    clear where one branch of code begins and ends.  If you don't 
+    include it then obnoxious errors come up.
+\end{enumerate}
+
+Other than that, they work like others do.  You don't need to have
+either \ident{else if} or \ident{else} parts.
 
 \section{What You Should See}
 
+This one is pretty simple to run and try out:
+
+\begin{code}{ex12 output}
+\begin{lstlisting}
+<< d['code/ex12.out|dexy'] >>
+\end{lstlisting}
+\end{code}
 
 \section{How To Break It}
+This one isn't easy to break because it's so simple, but try messing up the
+tests in the \ident{if-statement}.
 
+\begin{enumerate}
+\item Remove the \ident{else} at the end and it won't catch the edge case.
+\item Change the \verb|&&| to a \verb,||, so you get an "or" instead of "and" test
+    and see how that works.
+\end{enumerate}
 
 \section{Extra Credit}
 
-
+\begin{enumerate}
+\item You were briefly introduced to \verb|&&|, which does an "and" comparison,
+    so go research online the different "boolean operators".
+\item Write a few more test cases for this program to see what you can come
+    up with.
+\item Go back to Exercises 10 and 11, and use \ident{if-statements} to make
+    the loops exit early.  You'll need the \ident{break} statement to do that.
+    Go read about it.
+\item Is the first test really saying the right thing?  To you the "first argument"
+    isn't the same first argument a user entered.  Fix it.
+\end{enumerate}
 
