@@ -6,7 +6,7 @@ FINAL=learn-c-the-hard-way
 book:
 	dexy
 	cp Makefile output/
-	cp pastie.sty output/
+	cp style.sty output/
 	${MAKE} -C output clean $(FINAL).pdf
 	rm -rf output/*.dvi output/*.pdf
 	${MAKE} -C output $(FINAL).pdf
