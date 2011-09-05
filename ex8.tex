@@ -61,7 +61,8 @@ actually be totally different from mine, since your computer might
 have different size integers.  I'll go through my output:
 
 \begin{description}
-\item [5] My computer thinks an \ident{int} is 4 bytes in size.
+\item [5] My computer thinks an \ident{int} is 4 bytes in size. Your computer
+    might use a different size if it's a 32-bit vs. 64-bit.
 \item [6] The \ident{areas} array has 5 integers in it, so it makes
     sense that my computer requires 20 bytes to store it.
 \item [7] If we divide the size of \ident{areas} by size of an \ident{int}
@@ -103,5 +104,7 @@ Breaking this program is fairly easy.  Try some of these:
 \item Try assigning to elements in the \ident{areas} array with \verb|areas[0] = 100;| and similar.
 \item Try assigning to elements of \ident{name} and \ident{full\_name}.
 \item Try setting one element of \ident{areas} to a character from \ident{name}.
+\item Go search online for the different sizes used for integers on different
+    CPUs.
 \end{enumerate}
 
