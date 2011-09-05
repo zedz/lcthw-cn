@@ -1,13 +1,111 @@
-\chapter{Exercise 13}
+\chapter{Exercise 13: Switch Statement}
 
+In other languages like Ruby you have a \ident{switch-statement} that can take
+any expression.  Some languages like Python just don't have a
+\ident{switch-statement} since an \ident{if-statement} with boolean expressions
+is about the same thing.  For these languages, \ident{switch-statements} are
+more alternatives to \ident{if-statements} and work the same internally.
+
+The \ident{switch-statement} is actually entirely different and is really "jump
+table".  Instead of random boolean expressions, you can only put expressions
+that result in integers, and these integers are using to calculate jumps from
+the top of the \ident{switch} to the part that matches that value.  Here's some
+code that we'll break down to understand this concept of "jump tables":
+
+\begin{code}{ex13.c}
+<< d['code/ex13.c|pyg|l'] >>
+\end{code}
+
+In this program we're taking take a single command line argument and
+printing out all of the vowels in an incredibly tedious way to demonstrate
+a \ident{switch-statement}.  Here's how this \ident{switch-statement}
+works:
+
+\begin{enumerate}
+\item The compiler marks the place in the program where the
+    \ident{switch-statement} starts, let's call this location Y.
+\item It then evaluates the expression in \verb|switch(letter)| to
+    come up with a number.  In this case the number will be the
+    raw ASCII code of the letter in \verb|argv[1]|.
+\item The compiler has also translated each of the \ident{case} 
+    blocks like \verb|case 'A':| into a location in the program
+    that is that far away.  So the code under \verb|case 'A'| is
+    at Y+'A' in the program.
+\item It then does the math to figure out where Y+letter is
+    located in the \ident{switch-statement}, and if it's too
+    far then it adjusts it to Y+default.
+\item Once it knows the location, the program "jumps" to that spot
+    in the code, and then continues running.  This is why you have
+    \ident{break} on some of the \ident{case} blocks, but not others.
+\item If \verb|'a'| is entered, then it jumps to \verb|case 'a'|, there's
+    no break so it "falls through" to the one right under it \verb|case 'A'|
+    which has code and a \ident{break}.
+\item Finally it runs this code, hits the break then exits out of the
+    \ident{switch-statement} entirely.
+\end{enumerate}
+
+This is a deep dive into how the \ident{switch-statement} works, but
+in practice you just have to remember a few simple rules:
+
+\begin{enumerate}
+\item Always include a \ident{default:} branch so that you catch
+    any missing inputs.
+\item Don't allow "fall through" unless you really want it, and
+    it's a good idea to add a comment \verb|//fallthrough| so 
+    people know it's on purpose.
+\item Always write the \ident{case} and the \ident{break} before
+    you write the code that goes in it.
+\item Try to just use \ident{if-statements} instead if you can.
+\end{enumerate}
 
 \section{What You Should See}
 
+Here's an example of me playing with this, and also demonstrating
+various ways to pass the argument in:
+
+\begin{code}{ex13 output}
+\begin{lstlisting}
+<< d['code/ex13.out|dexy'] >>
+\end{lstlisting}
+\end{code}
+
+Remember that there's that \ident{if-statement} at the top that
+exits with a \verb|return 1;| when you don't give enough arguments.
+Doing a return that's not 0 is how you indicate to the OS that
+the program had an error.  Any value that's greater than 0 can be
+tested for in scripts and other programs to figure out what
+happened.
 
 \section{How To Break It}
 
+It is \emph{incredibly} easy to break a \ident{switch-statement}.
+Here's just a few of the ways you can mess one of these up:
+
+\begin{enumerate}
+\item Forget a \ident{break} and it'll run two or more
+    blocks of code you don't want it to run.
+\item Forget a \ident{default} and have it silently
+    ignore values you forgot.
+\item Accidentally put in variable into the \ident{switch} that
+    evaluates to something unexpected, like an \ident{int}
+    that becomes weird values.
+\item Use initialized values in the test.
+\end{enumerate}
+
+You can also break this program in a few other ways.  See if you
+can bust it yourself.
 
 \section{Extra Credit}
 
-
+\begin{enumerate}
+\item Write another program that uses math on the letter to
+    convert it to lowercase, and then remove all the extraneous
+    uppercase letters in the switch.
+\item Use the \verb|','| (comma) to initialize \ident{letter} 
+    in the \ident{for-loop}.
+\item Make it handle all of the arguments you pass it with 
+    yet another \ident{for-loop}.
+\item Convert this \ident{switch-statement} to an \ident{if-statement}.
+    Which do you like better?
+\end{enumerate}
 
