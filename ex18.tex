@@ -1,7 +1,24 @@
-\chapter{Exercise 18}
+\chapter{Exercise 18: Pointers To Functions}
 
+Functions in C are actually just pointers to a spot in the
+program where some code exists.  Just like you've been creating
+pointers to structs, strings, and arrays, you can point a
+pointer at a function too.  The main use for this is to pass
+"callbacks" to other functions, or to simulate classes and
+objects.  In this exercise we'll do some callbacks, and in
+the next one we'll make a simple object system.
+
+\begin{code}{ex18.c}
+<< d['code/ex18.c|pyg|l'] >>
+\end{code}
 
 \section{What You Should See}
+
+\begin{code}{ex18 output}
+\begin{lstlisting}
+<< d['code/ex18.out|dexy'] >>
+\end{lstlisting}
+\end{code}
 
 
 \section{How To Break It}
