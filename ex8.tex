@@ -1,13 +1,107 @@
-\chapter{Exercise 8}
+\chapter{Exercise 8: Sizes And Arrays}
 
+In the last exercise you did math, but with a \verb|'\0'| (nul) character.
+This may be odd coming from other languages, since they try to treat
+"strings" and "byte arrays" as different beasts.  C however treats strings
+as just arrays of bytes, and it's only the different printing functions
+that know there's a difference.
+
+Before I can really explain the significance of this, I have to
+introduce a few more concepts: \ident{sizeof} and arrays.  Here's
+the code we'll be talking about:
+
+\begin{code}{ex8.c}
+<< d['code/ex8.c|pyg|l'] >>
+\end{code}
+
+In this code we create a few arrays with different data types in them.  Because
+arrays of data are so central to how C works, there's a huge number of ways to
+create them.  For now, just use the syntax \verb|type name[] = {initializer};|
+and we'll explore more.  What this syntax means is, "I want an array of
+type that is initialized to {..}."  When C sees this it does the following:
+
+\begin{enumerate}
+\item Look at the type, in this first case it's \ident{int}.
+\item Look at the \verb|[]| and see that there's no length given.
+\item Look at the initializer, \verb|{10, 12, 13, 14, 20}| and 
+    figure out that you want those 5 ints in your array.
+\item Create a piece of memory in the computer, that can hold 
+    5 integers one after another.
+\item Take the name you want, \ident{areas} and assign it this
+    location.
+\end{enumerate}
+
+In the case of \ident{areas} it's creating an array of 5 ints
+that contain those numbers.  When it gets to \verb|char name[] = "Zed";|
+it's doing the same thing, except it's creating an array of 3 chars and
+assigning that to \ident{name}.  The final array we make is \ident{full\_name},
+but we use the annoying syntax of spelling it out, one character at a time.
+To C, \ident{name} and \ident{full\_name} are identical.
+
+The rest of the file, we're using a keyword called \ident{sizeof} to
+ask C how big things are in \emph{bytes}.  C is all about the size
+and location of pieces of memory and what you do with them.  To help
+you keep that straight, it gives you \ident{sizeof} so you can ask
+how big something is before you work with it.
+
+This is where stuff gets tricky, so first let's run this and then
+explain further.
 
 \section{What You Should See}
 
+\begin{code}{ex8 output}
+\begin{lstlisting}
+<< d['code/ex8.out|dexy'] >>
+\end{lstlisting}
+\end{code}
+
+Now you see the output of these different \ident{printf} calls
+and start to get a glimpse of what C is doing.  Your output could
+actually be totally different from mine, since your computer might
+have different size integers.  I'll go through my output:
+
+\begin{description}
+\item [5] My computer thinks an \ident{int} is 4 bytes in size.
+\item [6] The \ident{areas} array has 5 integers in it, so it makes
+    sense that my computer requires 20 bytes to store it.
+\item [7] If we divide the size of \ident{areas} by size of an \ident{int}
+    then we get 5 elements.  Looking at the code, this matches what 
+    we put in the initializer.
+\item [8] We then did an array access to get \verb|areas[0]| and 
+    \verb|areas[1]| which means C is "zero indexed" like Python
+    and Ruby.
+\item [9-11] We repeat this for the \ident{name} array, but notice
+    something odd about the size of the array?  It says it's 
+    \emph{4} bytes long, but we only typed "Zed" for 3 characters.
+    Where's the 4th one coming from?
+\item [12-13] We do the same thing with \ident{full\_name} and 
+    notice it gets this correct.
+\item [13] Finally we just print out the \ident{name} and \ident{full\_name}
+    to prove that they actually are "strings" according to printf.
+\end{description}
+
+Make sure you can go through and see how these output lines match
+what was created.  We'll be building on this and exploring more
+about arrays and storage next.
 
 \section{How To Break It}
 
+Breaking this program is fairly easy.  Try some of these:
+
+\begin{enumerate}
+\item Get rid of the \verb|'\0'| at the end of \ident{full\_name}
+    and re-run it.  Run it under valgrind too.
+\item Change it so that instead of \verb|areas[0]| you try to
+    print \verb|areas[10]| and see what valgrind thinks of that.
+\item Try other versions of these, doing it to \ident{name} and
+    \ident{full\_name} too.
+\end{enumerate}
 
 \section{Extra Credit}
 
-
+\begin{enumerate}
+\item Try assigning to elements in the \ident{areas} array with \verb|areas[0] = 100;| and similar.
+\item Try assigning to elements of \ident{name} and \ident{full\_name}.
+\item Try setting one element of \ident{areas} to a character from \ident{name}.
+\end{enumerate}
 

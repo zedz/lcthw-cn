@@ -1,0 +1,15 @@
+$ rm ex8
+$ make ex8
+cc -Wall -g    ex8.c   -o ex8
+$ ./ex8
+The size of int: 4
+The size of int[]: 20
+The number of ints in areas: 5
+The first area is 10, then 2nd 12.
+The size of char: 1
+The size of name: 4
+The number of chars: 4
+The size of full_name: 12
+The number of chars: 12
+name="Zed" and full_name="Zed A. Shaw"
+$
