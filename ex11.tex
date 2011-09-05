@@ -1,13 +1,77 @@
-\chapter{Exercise 11}
+\chapter{Exercise 11: While-Loop And Boolean Expressions}
 
+You've had your first taste of how C does loops, but the boolean
+expression \verb|i < argc| might have not been clear to you.  Let me
+explain something about it before we see how a \ident{while-loop} 
+works.
+
+In C, there's not really a "boolean" type, and instead any integer
+that's 0 is "false" and otherwise it's "true".  In the last exercise
+the expression \verb|i < argc| actually resulted in 1 or 0, not 
+an explicit \ident{True} or \ident{False} like in Python.  This is
+another example of C being closer to how a computer works, because
+to a computer truth values are just integers.
+
+Now you'll take and implement the same program from the last exercise
+but use a \ident{while-loop} instead.  This will let you compare the
+two so you can see how one is related to another.
+
+\begin{code}{ex11.c}
+<< d['code/ex11.c|pyg|l'] >>
+\end{code}
+
+You can see from this that a \ident{while-loop} is simpler:
+
+\begin{Verbatim}
+    while(TEST) {
+        CODE;
+    }
+\end{Verbatim}
+
+It simply runs the \ident{CODE} as long as \ident{TEST} is true (1).
+This means that to replicate how the \ident{for-loop} works we need to
+do our own intializing and incrementing of \ident{i}.
 
 \section{What You Should See}
 
+The output is basically the same, so I just did it a little different
+so you can see another way it runs.
+
+\begin{code}{ex11 output}
+\begin{lstlisting}
+<< d['code/ex11.out|dexy'] >>
+\end{lstlisting}
+\end{code}
 
 \section{How To Break It}
 
+In your own code you should favor \ident{for-loop} constructs over
+\ident{while-loop} because they're easier to break.  Here's a few
+common ways:
+
+\begin{enumerate}
+\item Forget to initialize the first \verb|int i;| so have it 
+    loop wrong.
+\item Forget to initialize the second loop's \ident{i} so that it
+    retains the value from the end of the first loop.  Now your 
+    second loop might or might not run.
+\item Forget to do a \verb|i++| increment at the end of the loop
+    and you get a "forever loop", one of the dreaded problems
+    of the first decade or two of programming.
+\end{enumerate}
 
 \section{Extra Credit}
 
+\begin{enumerate}
+\item Make these loops count backward by using \verb|i--| to start
+    at \verb|argc| and count down to 0.  You may have to do some
+    math to make the array indexes work right.
+\item Use a while loop to \emph{copy} the values from \ident{argv}
+    into \ident{states}.
+\item Make this copy loop never fail such that if there's too many
+    \ident{argv} elements it won't put them all into \ident{states}.
+\item Research if you've really copied these strings.  The answer may
+    surprise and confuse you though.
+\end{enumerate}
 
 

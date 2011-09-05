@@ -1,0 +1,18 @@
+$ make ex11
+cc -Wall -g    ex11.c   -o ex11
+$ ./ex11
+arg 0: ./ex11
+state 0: California
+state 1: Oregon
+state 2: Washington
+state 3: Texas
+$
+$ ./ex11 test it
+arg 0: ./ex11
+arg 1: test
+arg 2: it
+state 0: California
+state 1: Oregon
+state 2: Washington
+state 3: Texas
+$
