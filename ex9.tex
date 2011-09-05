@@ -74,7 +74,10 @@ character at the end of the strings.  There's a few ways to do this:
 
 Try to come up with some other ways to break this, and as usual run all of
 these under valgrind so you can see exactly what is going on and what the
-errors are called.
+errors are called.  Sometimes you'll make these mistakes and even
+Valgrind can't find them, but try moving where you declare the variables
+to see if you get the error.  This is part of the voodoo of C, that
+sometimes just where the variable is located changes the bug.
 
 \section{Extra Credit}
 
@@ -89,6 +92,9 @@ errors are called.
 \item If an array of characters is 4 bytes long, and an integer is 4 bytes
     long, then can you treat the whole \ident{name} array like it's just
     an integer?  How might you accomplish this crazy hack?
+\item Take out a piece of paper and draw out each of these arrays as a
+    row of boxes. Then do the operations you just did on paper to see
+    if you get them right.
 \end{enumerate}
 
 
