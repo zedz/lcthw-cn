@@ -1,13 +1,94 @@
-\chapter{Exercise 9}
+\chapter{Exercise 9: Arrays And Strings}
 
+In the last exercise you went through an introduction to creating basic
+arrays and how they map to strings.  In this exercise we'll more completely
+show the similarity between arrays and strings, and get into more about
+memory layouts.
+
+This exercise shows you that C stores it's strings simply as an array
+of bytes, terminated with the \verb|'\0'| (nul) byte.  You probably clued
+into this in the last exercise since we did it manually.  Here's
+how we do it in another way to make it even more clear by comparing it
+to an array of numbers:
+
+\begin{code}{ex9.c}
+<< d['code/ex9.c|pyg|l'] >>
+\end{code}
+
+In this code, we setup some arrays the tedious way, by assigning a value
+to each element.  In \ident{numbers} we are setting up numbers, but in
+name we're actually building a string manually.
 
 \section{What You Should See}
 
+When you run this code you should see first the arrays printed with
+their contents initialized to zero, then in its initialized form:
+
+\begin{code}{ex9 output}
+\begin{lstlisting}
+<< d['code/ex9.out|dexy'] >>
+\end{lstlisting}
+\end{code}
+
+You'll notice some interesting things about this program:
+
+\begin{enumerate}
+\item I didn't have to give all 4 elements of the arrays to initialize them.
+    This is a short-cut that C has where, if you set just one element, it'll
+    fill the rest in with 0.
+\item When each element of \ident{numbers} is printed they all come out as
+    0.
+\item When each element of \ident{name} is printed, only the first element 'a'
+    shows up because the \verb|'\0'| character is special and won't display.
+\item Then the first time we print \ident{name} it only prints "a" because,
+    since the array will be filled with 0 after the first 'a' in the 
+    initializer, then the string is correctly terminated by a \verb|'\0'|
+    character.
+\item We then setup the arrays with a tedious manual assignment to each thing
+    and print them out again.  Look at how they changed.  Now the numbers
+    are set, but see how the \ident{name} string prints my name correctly?
+\end{enumerate}
+
+Notice that I'm using the same syntax and style of code to interact with both
+an array of integers and an array of characters, but that \ident{printf} thinks
+that the \ident{name} is just a string.  Again, this is because to the C
+language there's no difference between a string and an array of characters.
 
 \section{How To Break It}
 
+The source of almost all bugs in C come from forgetting to have enough
+space, or forgetting to put a \verb|'\0'| at the end of a string.  In
+fact it's so common and hard to get right that the majority of good C
+code just doesn't use C style strings.  In later exercises we'll actually
+learn how to avoid C strings completely.
+
+In this program the key to breaking it is to forget to put the \verb|'\0'|
+character at the end of the strings.  There's a few ways to do this:
+
+\begin{enumerate}
+\item Get rid of the initializers that setup \ident{name}.
+\item Accidentally set \verb|name[3] = 'A';| so that there's no terminator.
+\item Set the initializer to \verb|{'a','a','a','a'}| so there's too many
+    'a' characters and no space for the \verb|'\0'| terminator.
+\end{enumerate}
+
+Try to come up with some other ways to break this, and as usual run all of
+these under valgrind so you can see exactly what is going on and what the
+errors are called.
 
 \section{Extra Credit}
 
+\begin{enumerate}
+\item Assign the characters into \ident{numbers} and then use \ident{printf}
+    to print them a character at a time.  What kind of compiler warnings 
+    did you get?
+\item Do the inverse for \ident{name}, trying to treat it like an array
+    of \ident{int} and print it out one \ident{int} at a time.  What
+    does Valgrind think of that?
+\item How many other ways can you print this out?
+\item If an array of characters is 4 bytes long, and an integer is 4 bytes
+    long, then can you treat the whole \ident{name} array like it's just
+    an integer?  How might you accomplish this crazy hack?
+\end{enumerate}
 
 

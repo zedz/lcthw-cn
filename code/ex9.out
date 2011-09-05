@@ -1,0 +1,10 @@
+$ make ex9
+cc -Wall -g    ex9.c   -o ex9
+$ ./ex9
+numbers: 0 0 0 0
+name each: a   
+name: a
+numbers: 1 2 3 4
+name each: Z e d 
+name: Zed
+$
