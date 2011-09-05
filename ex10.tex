@@ -1,13 +1,98 @@
-\chapter{Exercise 10}
+\chapter{Exercise 10: Arrays Of Strings, Looping}
+
+You can make an array of various types, and have the idea down that a
+"string" and an "array of bytes" are the same thing.  The next thing is
+to take this one step further and do an array that has strings in it.
+We'll also introduce your first looping construct, the \ident{for-loop}
+to help print out this new data structure.
+
+The fun part of this is that there's been an array of strings hiding in
+your programs for a while now, the \ident{char *argv[]} in the \ident{main}
+function arguments.  Here's code that will print out any command line
+arguments you pass it:
+
+\begin{code}{ex10.c}
+<< d['code/ex10.c|pyg|l'] >>
+\end{code}
+
+The format of a \ident{for-statement} is this:
+
+\begin{Verbatim}
+    for(INITIALIZER; TEST; INCREMENTER) {
+        CODE;
+    }
+\end{Verbatim}
+
+Here's how the \ident{for-loop} works:
+
+\begin{enumerate}
+\item The \ident{INITIALIZER} is code that is run to setup the loop, in this
+    case \verb|i = 0|.
+\item Next the \ident{TEST} boolean expression is checked, and if it's false (0)
+    nothing is done.
+\item The \ident{CODE} runs, does whatever it does.
+\item After the \ident{CODE} runs, the \ident{INCREMENTER} part is run, usually
+    incrementing something, like in \verb|i++|.
+\item And it continues again with Step 2 until the \ident{TEST} is false (0).
+\end{enumerate}
+
+This \ident{for-loop} is going through the command line arguments 
+using \ident{argc} and \ident{argv} like this:
+
+\begin{enumerate}
+\item The OS passes each command line argument as a string in the \ident{argv}
+    array.  The program's name (./ex10) is at 0, with the rest coming after it.
+\item The OS also sets \ident{argc} to the number of arguments in the \ident{argv}
+    array so you can process them without going past the end.
+\item The \ident{for-loop} sets up with \verb|i = 0| in the initializer.
+\item It then tests that \ident{i} is less than \ident{argc} with the
+    test \verb|i < argc|. Since initially 0 < 1 it will pass.
+\item It then runs the code which just prints out the \ident{i} and 
+    uses \ident{i} to index into \ident{argv}.
+\item The incrementer is then run using the \verb|i++| syntax, which is
+    a handy way of writing \verb|i = i + 1|.
+\item This then repeats until \verb|i < argc| is finally false (0) when
+    the loop exits and the program continues on.
+\end{enumerate}
 
 
 \section{What You Should See}
 
+To play with this program you have to run it two ways.  The first way is to
+pass in some command line arguments so that \ident{argc} and \ident{argv}
+get set.  The second is to run it with no arguments so you can see that
+the first \ident{for-loop} doesn't run since \verb|i < argc| will be false.
+
+\begin{code}{ex10 output}
+\begin{lstlisting}
+<< d['code/ex10.out|dexy'] >>
+\end{lstlisting}
+\end{code}
+
 
 \section{How To Break It}
 
+\begin{enumerate}
+\item Take your favorite other language, and use it to run this program, but
+    with as many command line arguments as possible.  See if you can bust it
+    by giving it way too many arguments.
+\item Initialize \ident{i} to 1 and see what that does.  Do you have to adjust
+    \ident{argc} as well or does it just work?  Why does 0-based indexing work
+    here?
+\item Set \ident{num\_states} wrong so that it's a higher value and see what
+    it does.
+\end{enumerate}
 
 \section{Extra Credit}
 
+\begin{enumerate}
+\item Figure out what kind of code you can put into the parts of a \ident{for-loop}.
+\item Look up how to use the \verb|','| (comma) character to separate multiple
+    statements in the parts of the \ident{for-loop}.
+\item Read what a \ident{NULL} is and try to use it in one of the elements of the
+    \ident{states} array to see what it'll print.
+\item See if you can assign an element from the \ident{states} array to the
+    \ident{argv} array before printing both.  Try the inverse.
+\end{enumerate}
 
 
