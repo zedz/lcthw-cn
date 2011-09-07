@@ -24,7 +24,7 @@ let's break it down:
 \item In the \ident{printf} you'll notice you're passing in a string, and
     it's a format string like in many other languages.
 \item After this format string, you put the variables that should be 
-    "replaced" into the format string by printf.
+    "replaced" into the format string by \ident{printf}.
 \end{enumerate}
 
 The result of doing this is you are handing \ident{printf} some variables
@@ -80,7 +80,7 @@ not cause it to crash on your computer:
     then recompile. You should get a couple of warnings.
 \item Run this new program and it will either crash, or print out a really
     crazy age.
-\item Put the printf back the way it was, and then don't set \ident{age}
+\item Put the \ident{printf} back the way it was, and then don't set \ident{age}
     to an initial value by changing that line to \verb|int age;| then
     rebuild and run again.
 \end{enumerate}
@@ -98,7 +98,7 @@ not cause it to crash on your computer:
 \item Find as many other ways to break \file{ex3.c} as you can.
 \item Run \verb|man 3 printf| and read about the other '\%' format
     characters you can use.  These should look familiar if you used
-    them in other languages (printf is where they come from).
+    them in other languages (\ident{printf} is where they come from).
 \item Add \file{ex3} to your \file{Makefile}'s \ident{all} list.  Use this
     to \verb|make clean all| and build all your exercises so far.
 \end{enumerate}
