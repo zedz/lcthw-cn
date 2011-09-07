@@ -92,13 +92,13 @@ Breaking this program is fairly easy.  Try some of these:
 
 \begin{enumerate}
 \item Get rid of the \verb|'\0'| at the end of \ident{full\_name}
-    and re-run it.  Run it under valgrind too.  Now, move the definition
+    and re-run it.  Run it under Valgrind too.  Now, move the definition
     of \ident{full\_name} to the top of \ident{main} before \ident{areas}.
     Try running it under Valgrind a few times and see if you get some 
     new errors.  In some cases, you might still get lucky and not catch
     any errors.
 \item Change it so that instead of \verb|areas[0]| you try to
-    print \verb|areas[10]| and see what valgrind thinks of that.
+    print \verb|areas[10]| and see what Valgrind thinks of that.
 \item Try other versions of these, doing it to \ident{name} and
     \ident{full\_name} too.
 \end{enumerate}
