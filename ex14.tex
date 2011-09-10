@@ -8,7 +8,43 @@ some functions and use some other functions.
 << d['code/ex14.c|pyg|l'] >>
 \end{code}
 
+In this example you're creating functions to print out the
+characters and ASCII codes for any that are "alpha" or "blanks".
+Here's the breakdown:
+
+\begin{description}
+\item[ex14.c:2] Include a new header file so we can gain access to
+    \func{isalpha} and \func{isblank}.
+\item[ex14.c:5-6] Tell C that you will be using some functions later
+    in your program, without having to actually define them.
+    This is a "forward declaration" and it solves the chicken-and-egg
+    problem of needing to use a function before you've defined it.
+\item[ex14.c:8-15] Define the \func{print\_arguments} which knows how
+    to print the same array of strings that \func{main} typically
+    gets.
+\item[ex14.c:17-30] Define the next function \func{print\_letters} that 
+    is called \emph{by} \func{print\_arguments} and knows
+    how to print each of the characters and their codes.
+\item[ex14.c:32-35] Define \func{can\_print\_int} which simply returns
+    the truth value (0 or 1) of \verb,isalpha(ch) || isblank(ch),
+    back to its caller \func{print\_letters}.
+\item[ex14.c:38-42] Finally \func{main} simply calls \func{print\_arguments}
+    to make the whole chain of function calls go.
+\end{description}
+
+I shouldn't have to describe what's in each function because it's all
+things you've ran into before.  What you should be able to see though
+is that I've simply defined functions the same way you've been defining
+\func{main}.  The only difference is you have to help C out by telling
+it ahead of time if you're going to use functions it hasn't encountered
+yet in the file.  That's what the "forward declarations" at the top do.
+
+
 \section{What You Should See}
+
+To play with this program you just feed it different command line 
+arguments, which get passed through your functions.  Here's me
+playing with it to demonstrate:
 
 \begin{code}{ex14 output}
 \begin{lstlisting}
@@ -16,11 +52,36 @@ some functions and use some other functions.
 \end{lstlisting}
 \end{code}
 
+The \func{isalpha} and \func{isblank} do all the work of figuring
+out if the given character is a letter or a blank.  When I do the
+last run it prints everything but the '3' character, since that 
+is a digit.
 
 \section{How To Break It}
+
+There's two different kinds of "breaking" in this program:
+
+\begin{enumerate}
+\item Confuse the compiler by removing the forward declarations
+    so it complains about \func{can\_print\_it} and \func{print\_letters}.
+\item When you call \func{print\_arguments} inside \func{main} try
+    adding 1 to \ident{argc} so that it goes past the end of the
+    \ident{argv} array.
+\end{enumerate}
 
 
 \section{Extra Credit}
 
-
+\begin{enumerate}
+\item Rework these functions so that you have fewer functions.  For example,
+    do you really need \func{can\_print\_it}?
+\item Have \func{print\_arguments} figure how long each argument string
+    is using the \func{strlen} function, and then pass that length
+    to \func{print\_letters}.  Then, rewrite \func{print\_letters} 
+    so it only processes this fixed length and doesn't rely on the
+    \verb|'\0'| terminator.
+\item Use \program{man} to lookup information on \func{isalpha}
+    and \func{isblank}.  Use the other similar functions to
+    print out only digits or other characters.
+\end{enumerate}
 
