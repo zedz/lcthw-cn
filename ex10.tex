@@ -69,6 +69,31 @@ the first \ident{for-loop} doesn't run since \verb|i < argc| will be false.
 \end{lstlisting}
 \end{code}
 
+\subsection{Understanding Arrays Of Strings}
+
+From this you should be able to figure out that in C you make an "array of
+strings" by combining the \verb|char *str = "blah"| syntax with the
+\verb|char str[] = {'b','l','a','h'}| syntax to construct a 2-dimensional
+array.  The syntax \verb|char *states[] = {...}| on line 13 is this
+2-dimension combination, with each string being one element, and each
+character in the string being another.
+
+Confusing? The concept of multiple dimensions is something most
+people never think about so what you should do is build this
+array of strings on paper:
+
+\begin{enumerate}
+\item Make a grid with the index of each \emph{string} on the left.
+\item Then put the index of each \emph{character} on the top.
+\item Then, fill in the squares in the middle with what single character
+    goes in that cell.
+\item Once you have the grid, trace through the code manually
+    using this grid of paper.
+\end{enumerate}
+
+Another way to figure this is out is to build the same structure
+in a programming language you are more familiar with like Python or
+Ruby.
 
 \section{How To Break It}
 
