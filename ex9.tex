@@ -47,12 +47,24 @@ You'll notice some interesting things about this program:
 \item We then setup the arrays with a tedious manual assignment to each thing
     and print them out again.  Look at how they changed.  Now the numbers
     are set, but see how the \ident{name} string prints my name correctly?
+
+\item There's also two syntaxes for doing a string:
+    \verb|char name[4] = {'a'}| on line 6
+    vs. \verb|char *another = name| on line 44.  The first 
+    one is less common and the second is what you should use
+    for string literals like this.
+
 \end{enumerate}
 
 Notice that I'm using the same syntax and style of code to interact with both
-an array of integers and an array of characters, but that \ident{printf} thinks
-that the \ident{name} is just a string.  Again, this is because to the C
-language there's no difference between a string and an array of characters.
+an array of integers and an array of characters, but that \ident{printf}
+thinks that the \ident{name} is just a string.  Again, this is because to the
+C language there's no difference between a string and an array of characters.
+
+Finally, when you make string literals you should usually use the
+\verb|char *another = "Literal"| syntax.  This works out to be the same thing, 
+but it's more idiomatic and easier to write.
+
 
 \section{How To Break It}
 
@@ -95,6 +107,8 @@ sometimes just where the variable is located changes the bug.
 \item Take out a piece of paper and draw out each of these arrays as a
     row of boxes. Then do the operations you just did on paper to see
     if you get them right.
+\item Convert \ident{name} to be in the style of \ident{another} and see
+    if the code keeps working.
 \end{enumerate}
 
 
