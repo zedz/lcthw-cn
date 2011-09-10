@@ -37,7 +37,7 @@ a few things using these commands:
 
 \begin{code}{Installing Requirements On Ubuntu}
 \begin{lstlisting}
-$ aptitude install build-essential
+$ sudo aptitude install build-essential
 \end{lstlisting}
 \end{code}
 
@@ -45,6 +45,15 @@ The above is an example of a command line prompt, so to get to where
 you can run that, find your "Terminal" program and run it first.  Then
 you'll get a shell prompt similar to the '\$' above and can type that
 command into it.  \emph{Do not type the '\$', just the stuff after it.}
+
+Here's how you would install the same setup on an RPM based Linux
+like Fedora:
+
+\begin{code}{Installing Requirements On Fedora}
+\begin{lstlisting}
+$ sudo yum groupinstall development-tools
+\end{lstlisting}
+\end{code}
 
 Once you've run that, you should be able to do the first Exercise in
 this book and it'll work.  If not then let me know.
