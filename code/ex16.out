@@ -1,0 +1,22 @@
+$ make ex16
+cc -Wall -g    ex16.c   -o ex16
+
+$ ./ex16
+Joe is at memory location 0xeba010:
+Name: Joe Alex
+	Age: 32
+	Height: 64
+	Weight: 140
+Frank is at memory location 0xeba050:
+Name: Frank Blank
+	Age: 20
+	Height: 72
+	Weight: 180
+Name: Joe Alex
+	Age: 52
+	Height: 62
+	Weight: 180
+Name: Frank Blank
+	Age: 40
+	Height: 72
+	Weight: 180

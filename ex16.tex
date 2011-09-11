@@ -1,23 +1,94 @@
 \chapter{Exercise 16: Structs And Pointers To Them}
 
-While it's useful to have all the various data types C has,
-it's more useful to package them into a cohesive container.
-A \ident{struct} is how C creates cohesive records, and the
-closest construct you might know is classes and objects.  However,
-\ident{structs} predate Object Oriented Programming so they're
-not quite the same.
-
 In this exercise you'll learn how to make a \ident{struct},
 create an array of them, point a pointer at them, and use them
-to make sense of internal memory structures.
+to make sense of internal memory structures.  I'll also apply
+the knowledge of pointers from the last exercise and get you
+constructing these structures from raw memory using \func{malloc}.
 
-% need to cover: making a struct, an array of them, pointers to them, self-referentials, typedefs
+As usual, here's the program we'll talk about, so type it in and
+make it work:
 
 \begin{code}{ex16.c}
 << d['code/ex16.c|pyg|l'] >>
 \end{code}
 
+To describe this program, I'm going to use a different approach
+than before.  I'm not going to give you a line-by-line breakdown
+of the program, but I'm going to make \emph{you} write it.  I'm
+going to give you a guide through the program based on the
+parts it contains, and your job is to write out what each line does.
+
+\begin{description}
+\item [struct Person] This is where I'm creating a structure that
+    has 4 elements to describe a person.  The final result is a
+    new compound type that let's me reference these elements all
+    as one, or each piece.  It's similar to a row of a database
+    table or an class in an OOP language.
+\item[function Person\_create] I need a way to create these structures
+    so I've made a function to do that.  Here's the important 
+    things this function is doing:
+    \begin{enumerate}
+    \item I use \func{malloc} for "memory allocate" to ask the OS
+        to give me a piece of raw memory.
+    \item I pass to \func{malloc} the \verb|sizeof(struct Person)| 
+        which calculates the total size of the struct, given all the 
+        fields inside it.
+    \item I use \func{assert} to make sure that I got a valid 
+        piece of memory back from malloc.  There's a special constant called
+    \ident{NULL} that you use to mean "unset or invalid pointer".  This
+    \func{assert} is basically checking that malloc didn't return a
+        NULL invalid pointer.
+    \item I initialize each field of \ident{struct Person} using the
+        \verb|x->y| syntax, to say what part of the struct I want to set.
+    \item I use the \func{strdup} function to duplicate the string 
+        for the name, just to make sure that this structure actually owns
+        it.  The \func{strdup} actually is like \func{malloc} and it also
+        copies the original string into the memory it creates.
+    \end{enumerate}
+\item[function Person\_destroy] If I have a create, then I always need
+    a destroy function, and this is what destroys \ident{Person} structs.
+    I again use \func{assert} to make sure I'm not getting bad input.
+    Then I use the function \func{free} to return the memory I got with
+    \func{malloc} and \func{strdup}.  If you don't do this you get
+    a "memory leak".
+\item[function Person\_print] I then need a way to print out people,
+    which is all this function does.  It uses the same \verb|x->y|
+    syntax to get the field from the struct to print it.
+\item[function main] In the main function I use all the previous
+    functions and the \ident{struct Person} to do the following:
+    \begin{enumerate}
+    \item Create two people, \ident{joe} and \ident{frank}.
+    \item Print them out, but notice I'm using the \verb|%p| 
+        format so you can see the \emph{where} the program
+        has actually put your struct in memory.
+    \item Age both of them by 20 years, with changes to their
+        body too.
+    \item Print each one after aging them.
+    \item Finally destroy the structures so we can clean up 
+        correctly.
+    \end{enumerate}
+\end{description}
+
+Go through this description carefully, and do the following:
+
+\begin{enumerate}
+\item Look up every function and header file you don't know about.
+    Remember that you can usually do \verb|man 2 function| or
+    \verb|man 3 function| and it'll tell you about it.  You can also
+    search online for the information.
+\item Write a \emph{comment} above each and every single line saying
+    what the line does in English.
+\item Trace through each function call and variable so you know where
+    it comes from in the program.
+\item Look up any symbols you don't know as well.
+\end{enumerate}
+
+
 \section{What You Should See}
+
+After you augment the program with your description comments,
+make sure it really runs and produces this output:
 
 \begin{code}{ex16 output}
 \begin{lstlisting}
@@ -25,8 +96,79 @@ to make sense of internal memory structures.
 \end{lstlisting}
 \end{code}
 
+\section{Explaining Structures}
+
+If you've done the work I asked you then structures should be
+making sense, but let me explain them explicitly just to make
+sure you've understood it.
+
+A structure in C is a collection of other data types (variables)
+that are stored in one block of memory but let you access each
+variable independently by name.  They are similar to a record
+in a database table, or a very simplistic class in an object
+oriented language.  We can break one down this way:
+
+\begin{enumerate}
+\item In the above code, you make a \ident{struct} that has the fields 
+    you'd expect for a person: name, age, weight, height.
+\item Each of those fields has a type, like \ident{int}.
+\item C then packs those together so they can all be contained in 
+    one single \ident{struct}.
+\item The \ident{struct Person} is now a \emph{compound data type}, which
+    means you can now refer to \ident{struct Person} in the same kinds
+    of expressions you would other data types.
+\item This lets you pass the whole cohesive grouping to other
+    functions, as you did with \func{Person\_print}.
+\item Finally, you can then access the individual parts of a
+    \ident{struct} by their names using \verb|x->y| if you're
+    dealing with a pointer.
+\end{enumerate}
+
+If you didn't have \ident{struct} you'd need to figure out
+the size, packing, and location of pieces of memory with
+contents like this.  In fact, in most early assembler code
+(and even some now) this is what you do.  With C you can 
+let C handle the memory structuring of these compound data types
+and then focus on what you do with them.
+
+
 \section{How To Break It}
 
+With this program the ways to break it involve how you use
+the pointers and the \func{malloc} system:
+
+\begin{enumerate}
+\item Try passing \ident{NULL} to \func{Person\_destroy} to see what
+    it does.  If it doesn't abort then you must not have the
+    \file{-g} option in your Makefile's \ident{CFLAGS}.
+\item Forget to call \func{Person\_destroy} at the end, then run
+    it under \program{Valgrind} to see it report that you forgot
+    to free the memory.  Figure out the options you need to pass
+    to \program{Valgrind} to get it to print how you leaked
+    this memory.
+\item Forget to free \ident{who->name} in \func{Person\_print}
+    and compare the output.  Again, use the right options to 
+    see how \program{Valgrind} tells you exactly where you messed
+    up.
+\item This time, pass \ident{NULL} to \func{Person\_print} and
+    see what \program{Valgrind} thinks of that.
+\item You should be figuring out that \ident{NULL} is a quick way
+    to crash your program.
+\end{enumerate}
 
 \section{Extra Credit}
+
+In this exercise I want you to attempt something difficult for
+the extra credit:  Convert this program to \emph{not} use pointers
+and \func{malloc}.  This will be hard, so you'll want to research
+the following:
+
+\begin{enumerate}
+\item How to create a \ident{struct} on the \emph{stack}, which
+    means just like you've been making any other variable.
+\item How to initialize it using the \verb|x.y| (period) character
+    instead of the \verb|x->y| syntax.
+\item How to pass a structure to other functions without using
+    a pointer.
+\end{enumerate}
 
