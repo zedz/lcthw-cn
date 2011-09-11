@@ -21,46 +21,46 @@ yourself on a piece of paper, then see if what you guessed was
 going on matches my description of pointers later.
 
 \begin{description}
-\item[6-10] Create two arrays, \ident{ages} storing some \ident{int}
+\item[ex15.c:6-10] Create two arrays, \ident{ages} storing some \ident{int}
     data, and \ident{names} storing an array of strings.
-\item[12-13] Some variables for our \ident{for-loops} later.
-\item[16-19] You know this is just looping through the two arrays and
+\item[ex15.c:12-13] Some variables for our \ident{for-loops} later.
+\item[ex15.c:16-19] You know this is just looping through the two arrays and
     printing how old each person is.  This is using \ident{i} to 
     index into the array.
-\item[22] Create a pointer that points at \ident{ages}.
+\item[ex15.c:22] Create a pointer that points at \ident{ages}.
     Notice the use of \verb|int *| to create a
     "pointer to integer" type of pointer.  That's similar to 
     \verb|char *|, which is a "pointer to char", and a string
     is an array of chars.  Seeing the similarity yet?
-\item[23] Create a pointer that points at \ident{names}.
+\item[ex15.c:23] Create a pointer that points at \ident{names}.
     A \verb|char *| is already a "pointer to char", so that's 
     just a string.  You however need 2 levels, since \ident{names}
     is 2-dimensional, that means you need \verb|char **| for
     a "pointer to (a pointer to char)" type. Study that too, explain
     it to yourself.
-\item[26-29] Loop through \ident{ages} and \ident{names} but instead
+\item[ex15.c:26-29] Loop through \ident{ages} and \ident{names} but instead
     use the pointers \emph{plus and offset of i}.  Writing
     \verb|*(cur_name+i)| is the same as writing \verb|name[i]|, and
     you read it as "the value of (pointer \ident{cur\_name} plus i)".
-\item[32-35] This shows the "magic" of how C treats pointers and
+\item[ex15.c:32-35] This shows the "magic" of how C treats pointers and
     arrays as the same thing.  You just use the array syntax for
     accessing the array, but use the pointer's name.  C figures it
     all out for you.
-\item[38-44] Another admittedly insane loop that does the same thing
+\item[ex15.c:38-44] Another admittedly insane loop that does the same thing
     as the other two, but instead it uses various pointer arithmetic
     methods:
     \begin{description}
-    \item[38] Initialize our \ident{for-loop} by setting \ident{cur\_name}
+    \item[ex15.c:38] Initialize our \ident{for-loop} by setting \ident{cur\_name}
         and \ident{cur\_age} to the beginning of the \ident{names} and
         \ident{ages} arrays.
-    \item[39] The test portion of the \ident{for-loop} then compares
+    \item[ex15.c:39] The test portion of the \ident{for-loop} then compares
         the \emph{distance} of the pointer \ident{cur\_age} from the
         start of \ident{ages}.  Why does that work?
-    \item[40] The increment part of the \ident{for-loop} then increments
+    \item[ex15.c:40] The increment part of the \ident{for-loop} then increments
         both \ident{cur\_name} and \ident{cur\_age} so that they point
         at the \emph{next} element of the \ident{name} and \ident{age}
         arrays.
-    \item[42-43] The pointers \ident{cur\_name} and \ident{cur\_age} 
+    \item[ex15.c:42-43] The pointers \ident{cur\_name} and \ident{cur\_age} 
         are now pointing at one element of the arrays they work on,
         and we can print them out using just \verb|*cur_name| and
         \verb|*cur_age|, which means "the value of wherever \ident{cur\_name}
