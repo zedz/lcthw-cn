@@ -69,7 +69,12 @@ in it:
 \end{lstlisting}
 \end{code}
 
-This file is showing you some new stuff with make.  First we set
+Save this file as \file{Makefile} in your current directory.  Make
+automatically assumes there's a filed called \file{Makefile} and will
+just run it.  Also, \emph{WARNING: Make sure you are only entering TAB
+characters, not mixtures of TAB and spaces.}
+
+This \file{Makefil} is showing you some new stuff with make.  First we set
 \ident{CFLAGS} in the file so we never have to set it again, as well
 as adding the \verb|-g| flag to get debugging.  Then we have a 
 section named \ident{clean} which tells make how to clean up our
