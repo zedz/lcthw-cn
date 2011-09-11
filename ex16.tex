@@ -24,7 +24,7 @@ parts it contains, and your job is to write out what each line does.
 \item [struct Person] This is where I'm creating a structure that
     has 4 elements to describe a person.  The final result is a
     new compound type that let's me reference these elements all
-    as one, or each piece.  It's similar to a row of a database
+    as one, or each piece by name.  It's similar to a row of a database
     table or an class in an OOP language.
 \item[function Person\_create] I need a way to create these structures
     so I've made a function to do that.  Here's the important 
@@ -35,7 +35,7 @@ parts it contains, and your job is to write out what each line does.
     \item I pass to \func{malloc} the \verb|sizeof(struct Person)| 
         which calculates the total size of the struct, given all the 
         fields inside it.
-    \item I use \func{assert} to make sure that I got a valid 
+    \item I use \func{assert} to make sure that I have a valid 
         piece of memory back from malloc.  There's a special constant called
     \ident{NULL} that you use to mean "unset or invalid pointer".  This
     \func{assert} is basically checking that malloc didn't return a
@@ -120,9 +120,12 @@ oriented language.  We can break one down this way:
     of expressions you would other data types.
 \item This lets you pass the whole cohesive grouping to other
     functions, as you did with \func{Person\_print}.
-\item Finally, you can then access the individual parts of a
+\item You can then access the individual parts of a
     \ident{struct} by their names using \verb|x->y| if you're
     dealing with a pointer.
+\item There's also a way to make a struct that doesn't need
+    a pointer, and you use the \verb|x.y| (period) syntax
+    to work with it.  You'll do this in the Extra Credit.
 \end{enumerate}
 
 If you didn't have \ident{struct} you'd need to figure out
