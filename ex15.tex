@@ -6,11 +6,79 @@ actually aren't that complex, it's just they are frequently abused
 in weird ways that make them hard to use.  If you avoid the stupid
 ways to use pointers then they're fairly easy.
 
+To demonstrate pointers in a way we can talk about them, I've
+written a frivolous program that prints a group of people's
+ages in three different ways:
+
 \begin{code}{ex15.c}
 << d['code/ex15.c|pyg|l'] >>
 \end{code}
 
+Before explaining how pointers work, let's break this program down
+line-by-line so you get an idea of what's going on.  As you go
+through this detailed description, try to answer the questions for 
+yourself on a piece of paper, then see if what you guessed was
+going on matches my description of pointers later.
+
+\begin{description}
+\item[6-10] Create two arrays, \ident{ages} storing some \ident{int}
+    data, and \ident{names} storing an array of strings.
+\item[12-13] Some variables for our \ident{for-loops} later.
+\item[16-19] You know this is just looping through the two arrays and
+    printing how old each person is.  This is using \ident{i} to 
+    index into the array.
+\item[22] Create a pointer that points at \ident{ages}.
+    Notice the use of \verb|int *| to create a
+    "pointer to integer" type of pointer.  That's similar to 
+    \verb|char *|, which is a "pointer to char", and a string
+    is an array of chars.  Seeing the similarity yet?
+\item[23] Create a pointer that points at \ident{names}.
+    A \verb|char *| is already a "pointer to char", so that's 
+    just a string.  You however need 2 levels, since \ident{names}
+    is 2-dimensional, that means you need \verb|char **| for
+    a "pointer to (a pointer to char)" type. Study that too, explain
+    it to yourself.
+\item[26-29] Loop through \ident{ages} and \ident{names} but instead
+    use the pointers \emph{plus and offset of i}.  Writing
+    \verb|*(cur_name+i)| is the same as writing \verb|name[i]|, and
+    you read it as "the value of (pointer \ident{cur\_name} plus i)".
+\item[32-35] This shows the "magic" of how C treats pointers and
+    arrays as the same thing.  You just use the array syntax for
+    accessing the array, but use the pointer's name.  C figures it
+    all out for you.
+\item[38-44] Another admittedly insane loop that does the same thing
+    as the other two, but instead it uses various pointer arithmetic
+    methods:
+    \begin{description}
+    \item[38] Initialize our \ident{for-loop} by setting \ident{cur\_name}
+        and \ident{cur\_age} to the beginning of the \ident{names} and
+        \ident{ages} arrays.
+    \item[39] The test portion of the \ident{for-loop} then compares
+        the \emph{distance} of the pointer \ident{cur\_age} from the
+        start of \ident{ages}.  Why does that work?
+    \item[40] The increment part of the \ident{for-loop} then increments
+        both \ident{cur\_name} and \ident{cur\_age} so that they point
+        at the \emph{next} element of the \ident{name} and \ident{age}
+        arrays.
+    \item[42-43] The pointers \ident{cur\_name} and \ident{cur\_age} 
+        are now pointing at one element of the arrays they work on,
+        and we can print them out using just \verb|*cur_name| and
+        \verb|*cur_age|, which means "the value of wherever \ident{cur\_name}
+            is pointing".
+    \end{description}
+\end{description}
+
+This seemingly simple program has a large amount of information, and the
+goal is to get your to attempt figuring pointers out for yourself before
+I explain them.  \emph{Don't continue until you've written down what
+you think a pointer does.}
+
+
 \section{What You Should See}
+
+After you run this program try to trace back each line printed out to the
+line in the code that produced it.  If you have to, alter the \func{printf}
+calls to make sure you got the right line number.
 
 \begin{code}{ex15 output}
 \begin{lstlisting}
@@ -18,10 +86,146 @@ ways to use pointers then they're fairly easy.
 \end{lstlisting}
 \end{code}
 
+
+\section{Explaining Pointers}
+
+When you type something like \verb|ages[i]| you are "indexing" into the array
+\ident{ages}, and you're using the number that's held in \ident{i} to do it.
+If \ident{i} is set to 0 then it's the same as typing \verb|ages[0]|.  We've
+been calling this number \ident{i} an "index" since it's a location inside
+\verb|ages| that we want.  It could also be called an "address", that's a way
+of saying "I want the integer in \ident{ages} that is at address \ident{i}".
+
+If \ident{i} is an index, then what's \ident{ages}?  To C \ident{ages} is a
+location in the computer's memory where all of these integers start.  It is
+\emph{also} an address, and the C compiler will replace anywhere you type
+\ident{ages} with the address of the very first integer in ages.  Another way
+to think of \ident{ages} is it's the "address of all the first integer in
+ages".  But, the trick is \ident{ages} is an address inside the \emph{entire
+computer}.  It's not like \ident{i} which was just an address inside
+\ident{ages}.  The \ident{ages} array name is actually an address in the
+computer.
+
+That leads to a certain realization:  C thinks your whole computer is one
+massive array of bytes.  Obviously this isn't very useful, but then C layers on
+top of this massive array of bytes the concept of \emph{types} and \emph{sizes}
+of those types.  You already saw how this worked in previous exercises, but now
+you can start to get an idea that C is somehow doing the following with your
+arrays:
+
+\begin{enumerate}
+\item Creating a block of memory inside your computer.
+\item "Pointing" the name \ident{ages} at the beginning of that block.
+\item "Indexing" into the block by taking the base address of \ident{ages} and 
+    getting the element that's \ident{i} away from there.
+\item Converting that address at \ident{ages+i} into a valid \ident{int} of
+    the right size, such that the index works to return what you want: the int at 
+    index \ident{i}.
+\end{enumerate}
+
+If you can take a base address, like \ident{ages}, and then "add" to it with
+another address like \ident{i} to produce a new address, then can you just make
+something that points right at this location all the time?  Yes, and that thing
+is called a "pointer".  The \ident{cur\_age} and \ident{cur\_name} variables
+are pointing at the location where \ident{ages} and \ident{names} live in your
+computer's memory.  The example program is then moving them around or doing
+math on them to get values out of the memory.
+
+A pointer is simply an address pointing somewhere inside the computer's memory,
+with a type specifier so you get the right size of data with it.  It is kind of
+like a combined \ident{ages} and \ident{i} rolled into one data type.  C knows
+where pointers are pointing, knows the data type they point at, the size of
+those types, and how to get the data for you.  Just like \ident{i} you can
+increment them, decrement them, subtract or add to them.  But, just like
+\ident{ages} you can also get values out with them, put new values in, and all
+the array operations. 
+
+The purpose of a pointer is to let you manually index into blocks or memory
+when an array won't do it right.  In almost all other cases you actually
+want to use an array.  But, there are times when you \emph{have} to work
+with a raw block of memory and that's where a pointer comes in.  A pointer
+gives you raw, direct access to a block of memory so you can work with it.
+
+The final thing to grasp at this stage is that you can use either syntax
+for most array or pointer operations.  You can take a pointer to something,
+but use the array syntax for accessing it.  You can take an array and do
+pointer arithmetic with it.  In the above example program I demonstrate this
+and it's a fundamental aspect of C: pointers and arrays are the same thing (mostly).
+
+\section{Practical Pointer Usage}
+
+There are four primary useful things you do with pointers in C code:
+
+\begin{enumerate}
+\item Ask the OS for a chunk of memory using \func{malloc} and use a pointer
+    to work with it.  This includes strings and something you haven't seen
+    yet, \ident{structs}.
+\item Passing large block of memory (like strings and arrays) to functions
+    with a pointer so you don't have to pass the whole thing to them.
+\item Taking the address of a function so you can use it as a dynamic callback.
+\item Complex scanning of chunks of memory such as converting bytes off a network
+    socket into data structures or parsing files.
+\end{enumerate}
+
+For nearly everything else you see people use pointers, they should be using
+arrays.  In the early days of C programming people used pointers to speed
+up their programs because the compilers were really bad at optimizing array 
+usage.  These days the syntax to access an array vs. a pointer are translated
+into the same machine code and optimized the same, so it's not as necessary.
+Instead, you go with arrays every time you can, and then only use pointers
+as a performance optimization if you absolutely have to.
+
+
+\section{The Pointer Lexicon}
+
+I'm now going to give you a little lexicon to use for reading and writing
+pointers.  Whenever you run into a complex pointer statement, just refer
+to this and break it down bit by bit (or just don't use that code since it's
+probably not good code):
+
+\begin{description}
+\item[type *ptr] "a pointer of type named ptr"
+\item[*ptr] "the value of whatever ptr is pointed at"
+\item[*(ptr + i)] "the value of (whatever ptr is pointed at plus i)"
+\item[\&thing] "the address of thing"
+\item[type *ptr = \&thing] "a pointer of type names ptr set to the address of thing"
+\item[*(ptr++)] "the value of wherever ptr points, then increment it"
+\end{description}
+
+We'll be using this simple lexicon to break down all of the pointers
+we use from now on in the book.
+
+
 \section{How To Break It}
 
+You can break this program by simply pointing the pointers at the wrong things:
+
+\begin{enumerate}
+\item Try to make \ident{cur\_age} point at \ident{names}.  You'll need to
+    use a C cast to force it, so go look that up and try to figure it out.
+\item In the final \ident{for-loop} try getting the math wrong in weird ways.
+\item Try rewriting the loops so they start at the end of the arrays and go
+    to the beginning.  This is harder than it looks.
+\end{enumerate}
 
 \section{Extra Credit}
 
+\begin{enumerate}
+\item Rewrite all the array usage in this program so that it's pointers.
+\item Rewrite all the pointer usage so they're arrays.
+\item Go back to some of the other programs that use arrays and 
+    try to use pointers instead.
+\item Process command line arguments using just pointers similar to how
+    you did \ident{names} in this one.
+\item Play with combinations of getting the value of and the address of
+    things.
+\item Add another \ident{for-loop} at the end that prints out the
+    addresses these pointers are using.  You'll need the \verb|%p| format
+    for \func{printf}.
+\item Rewrite this program to use a function for each of the ways you're
+    printing out things.  Try to pass pointers to these functions so 
+    they work on the data.  Remember you can declare a function to accept
+    a pointer, but just use it like an array.
+\end{enumerate}
 
 
