@@ -5,7 +5,8 @@ int main(int argc, char *argv[])
     int i = 0;
 
     // go through each string in argv
-    for(i = 0; i < argc; i++) {
+    // skipping the first arg because
+    for(i = 1; i < argc; i++) {
         printf("arg %d: %s\n", i, argv[i]);
     }
 

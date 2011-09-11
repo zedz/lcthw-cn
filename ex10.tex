@@ -44,7 +44,7 @@ using \ident{argc} and \ident{argv} like this:
     array.  The program's name (./ex10) is at 0, with the rest coming after it.
 \item The OS also sets \ident{argc} to the number of arguments in the \ident{argv}
     array so you can process them without going past the end.
-\item The \ident{for-loop} sets up with \verb|i = 0| in the initializer.
+\item The \ident{for-loop} sets up with \verb|i = 1| in the initializer.
 \item It then tests that \ident{i} is less than \ident{argc} with the
     test \verb|i < argc|. Since initially $0 < 1$ it will pass.
 \item It then runs the code which just prints out the \ident{i} and 
@@ -101,7 +101,7 @@ Ruby.
 \item Take your favorite other language, and use it to run this program, but
     with as many command line arguments as possible.  See if you can bust it
     by giving it way too many arguments.
-\item Initialize \ident{i} to 1 and see what that does.  Do you have to adjust
+\item Initialize \ident{i} to 0 and see what that does.  Do you have to adjust
     \ident{argc} as well or does it just work?  Why does 0-based indexing work
     here?
 \item Set \ident{num\_states} wrong so that it's a higher value and see what
