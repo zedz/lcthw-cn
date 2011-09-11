@@ -69,7 +69,7 @@ going on matches my description of pointers later.
 \end{description}
 
 This seemingly simple program has a large amount of information, and the
-goal is to get your to attempt figuring pointers out for yourself before
+goal is to get you to attempt figuring pointers out for yourself before
 I explain them.  \emph{Don't continue until you've written down what
 you think a pointer does.}
 
@@ -100,7 +100,7 @@ If \ident{i} is an index, then what's \ident{ages}?  To C \ident{ages} is a
 location in the computer's memory where all of these integers start.  It is
 \emph{also} an address, and the C compiler will replace anywhere you type
 \ident{ages} with the address of the very first integer in ages.  Another way
-to think of \ident{ages} is it's the "address of all the first integer in
+to think of \ident{ages} is it's the "address of the first integer in
 ages".  But, the trick is \ident{ages} is an address inside the \emph{entire
 computer}.  It's not like \ident{i} which was just an address inside
 \ident{ages}.  The \ident{ages} array name is actually an address in the
@@ -126,10 +126,15 @@ arrays:
 If you can take a base address, like \ident{ages}, and then "add" to it with
 another address like \ident{i} to produce a new address, then can you just make
 something that points right at this location all the time?  Yes, and that thing
-is called a "pointer".  The \ident{cur\_age} and \ident{cur\_name} variables
-are pointing at the location where \ident{ages} and \ident{names} live in your
-computer's memory.  The example program is then moving them around or doing
-math on them to get values out of the memory.
+is called a "pointer".  This is what the pointers \ident{cur\_age} and
+\ident{cur\_name} are doing. They are variables pointing at the location where
+\ident{ages} and \ident{names} live in your computer's memory.  The example
+program is then moving them around or doing math on them to get values out of
+the memory.  In one instance, they just add \ident{i} to \ident{cur\_age},
+which is the same as what it does with \verb|array[i]|. In the last
+\ident{for-loop} though these two pointers are being moved on their own, without
+\ident{i} to help out.  In that loop, the pointers are treated like a combination
+of array and integer offset rolled into one.
 
 A pointer is simply an address pointing somewhere inside the computer's memory,
 with a type specifier so you get the right size of data with it.  It is kind of
@@ -160,7 +165,7 @@ There are four primary useful things you do with pointers in C code:
 \item Ask the OS for a chunk of memory using \func{malloc} and use a pointer
     to work with it.  This includes strings and something you haven't seen
     yet, \ident{structs}.
-\item Passing large block of memory (like strings and arrays) to functions
+\item Passing large blocks of memory (like strings and arrays) to functions
     with a pointer so you don't have to pass the whole thing to them.
 \item Taking the address of a function so you can use it as a dynamic callback.
 \item Complex scanning of chunks of memory such as converting bytes off a network
@@ -188,8 +193,8 @@ probably not good code):
 \item[*ptr] "the value of whatever ptr is pointed at"
 \item[*(ptr + i)] "the value of (whatever ptr is pointed at plus i)"
 \item[\&thing] "the address of thing"
-\item[type *ptr = \&thing] "a pointer of type names ptr set to the address of thing"
-\item[*(ptr++)] "the value of wherever ptr points, then increment it"
+\item[type *ptr = \&thing] "a pointer of type named ptr set to the address of thing"
+\item[ptr++] "increment where ptr points"
 \end{description}
 
 We'll be using this simple lexicon to break down all of the pointers
@@ -226,6 +231,8 @@ You can break this program by simply pointing the pointers at the wrong things:
     printing out things.  Try to pass pointers to these functions so 
     they work on the data.  Remember you can declare a function to accept
     a pointer, but just use it like an array.
+\item Change the \ident{for-loops} to \ident{while-loops} and see what
+    works better for which kind of pointer usage.
 \end{enumerate}
 
 
