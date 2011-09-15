@@ -1,15 +1,27 @@
 \chapter{Exercise 17: Heap And Stack Memory Allocation}
 
-You know about many of the data types that C supports, but
-now you need to know how they're stored in memory and how to
-get access to greater amounts of memory with \ident{malloc}
-and friends.
+In this exercise you're going to make a big leap in difficulty and create
+an entire small program to manage a database.  This database isn't very
+efficient and doesn't store very much, but it does demonstrate most of
+what you've learned so far.  It also introduces memory allocation more
+formally and gets you started working with files.  We use some file I/O
+functions, but I won't be explaining them too well so you can try to
+figure them out first.
+
+As usual, type this whole program in and get it working, then we'll discuss:
 
 \begin{code}{ex17.c}
 << d['code/ex17.c|pyg|l'] >>
 \end{code}
 
+TODO: Explain the program....
+
 \section{What You Should See}
+
+You should spend as much time as you can testing that it works, and running
+it with \program{Valgrind} to confirm you've got all the memory usage
+right.  Here's a session of me testing it normally and then using
+\program{Valgrind} to check the operations:
 
 \begin{code}{ex17 output}
 \begin{lstlisting}
@@ -17,10 +29,34 @@ and friends.
 \end{lstlisting}
 \end{code}
 
+The actual output of \program{Valgrind} is taken out since you should
+be able to detect it.
+
+\begin{aside}{OSX Valgrind "Leaks"}
+\program{Valgrind} will report that you're leaking small blocks of memory,
+but sometimes it's just over-reporting from OSX's internal APIs.  If you see it
+showing leaks that aren't inside your code then just ignore them.
+\end{aside}
+
 \section{How To Break It}
 
+This program has a lot of places you can break it, so try some of these
+but also come up with your own:
+
+\begin{enumerate}
+\item The classic way is to remove some of the safety checks such that you can
+    pass in arbitrary data. For example, if you remove the check on line 157
+    that prevents you from passing in any record number.
+\item You can also try corrupting the data file.  Open it in any editor and
+    change random bytes then close it.
+\end{enumerate}
 
 \section{Extra Credit}
 
-
-
+\begin{enumerate}
+\item The \func{die} function needs to be augmented to let you pass the \ident{conn}
+    variable so it can close it and clean up.
+\item Add more operations you can do on the database, like \ident{find}.
+\item Try reworking the program to use a single global for the database connection.
+    How does this new version of the program compare to the other one?
+\end{enumerate}
