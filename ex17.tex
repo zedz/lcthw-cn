@@ -55,8 +55,11 @@ key things I'm doing that you should pay attention to as well:
 \item [processing complex arguments] I'm doing some more complex argument parsing,
     but this isn't really the best way to do it.  We'll get into better option
     parsing later in the book.
+\item [converting strings to ints] I use the \func{atoi} function to take the
+    string for the id on the command line and convert it to the \ident{int id}
+    variable.  Read up on this function and similar ones.
 \item [allocating large data on the "heap"] The whole point of this program is
-    that I'm using \func{malloc} to ask the OS for a large amount of ram
+    that I'm using \func{malloc} to ask the OS for a large amount of memory
     to work with when I create the \ident{Database}.  I cover this in more
     detail below.
 \end{description}
@@ -86,7 +89,65 @@ showing leaks that aren't inside your code then just ignore them.
 
 \section{Heap vs. Stack Allocation}
 
-TODO: Get deeper into this
+You kids these days have it great.  You play with your Ruby or Python and 
+just make objects and variables without any care for where they live.  You
+don't care if it's on the "stack", and the heap?  Fuggedaboutit.  You don't
+even know, and you know what, chances are your language of choice doesn't
+even put the variables on stack at all.  It's all heap, and you don't even
+\emph{know} if it is.
+
+C is different because it's using the real CPU's actual machinery to do its
+work, and that involves a chunk of ram called the stack and another 
+called the heap.  What's the difference?  It all depends on where you
+get the storage.
+
+The heap is easier to explain as it's just all the remaining memory in
+your computer, and you access it with the function \func{malloc} to
+get more.  Each time you call \func{malloc}, the OS uses internal 
+functions to register that piece of memory to you, and then returns
+a pointer to it.  When you're done with it, you use \func{free} to
+return it to the OS so that it can be used by other programs.  Failing
+to do this will cause your program to "leak" memory, but \program{Valgrind}
+will help you track these leaks down.
+
+The stack is a special region of memory that stores temporary variables each
+function creates as locals to that function.  How it works is each argument to
+a function is "pushed" onto the stack, and then used inside the function.  It
+is really a stack data structure, so the last thing in is the first thing out.
+This also happens with all local variables like \ident{char action} and
+\ident{int id} in \func{main}.  The advantage of using a stack for this is
+simply that, when the function exits, the C compiler "pops" these variables off
+the stack to clean up.  This is simple and prevents memory leaks if the
+variable is on the stack.
+
+The easiest way to keep this straight is with this mantra:  If you
+didn't get it from \func{malloc} or a function that got it from \func{malloc},
+then it's on the stack.
+
+There's three primary problems with stacks and heaps to watch for:
+
+\begin{enumearte}
+\item If you get a block of memory from \func{malloc}, and have that
+    pointer on the stack, then when the function exits, the pointer will
+    get popped off and lost.
+\item If you put too much data on the stack (like large structs and arrays)
+    then you can cause a "stack overflow" and the program will abort.  In
+    this case, use the heap with \func{malloc}.
+\item If you take a pointer to something on the stack, and then pass that
+    or return it from your function, then the function receiving it will
+    "segmentation fault" (segfault) because the actual data will get 
+    popped off and disappear.  You'll be pointing at dead space.
+\end{enumerate}
+
+This is why in the program I've created a \func{Database\_open} that allocates
+memory or dies, and then a \func{Database\_close} that frees everything.  If you
+create a "create" function, that makes the whole thing or nothing, and then a
+"destroy" function that cleans up everything safely, then it's easier to keep 
+it all straight.
+
+Finally, when a program exits the OS will clean up all the resources for you,
+but sometimes not immediately.  A common idiom (and one I use in this
+exercise) is to just abort and let the OS clean up on error.
 
 \section{How To Break It}
 
@@ -108,6 +169,9 @@ but also come up with your own:
     when the \ident{name} or \ident{address} you give is \emph{greater} than
     512 bytes.  Fix this by simply forcing the last character to \verb|'\0'|
     so that it's always set no matter what (which is what strncpy should do).
+\item In the extra credit I have you augment the program to create arbitrary
+    size databases.  Try to see what the biggest database is before you
+    cause the program to die for lack of memory from \func{malloc}.
 \end{enumerate}
 
 \section{Extra Credit}
@@ -128,4 +192,6 @@ but also come up with your own:
     has an error.
 \item Try reworking the program to use a single global for the database connection.
     How does this new version of the program compare to the other one?
+\item Go research "stack data structure" and write one in your favorite language,
+    then try to do it in C.
 \end{enumerate}
