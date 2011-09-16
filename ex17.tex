@@ -22,7 +22,10 @@ key things I'm doing that you should pay attention to as well:
 
 \begin{description}
 \item [\#define for constants] I use another part of the "C Pre-Processor" to
-    create constant settings of \ident{MAX\_DATA} and \ident{MAX\_ROWS}.
+    create constant settings of \ident{MAX\_DATA} and \ident{MAX\_ROWS}.  I'll
+    cover more of what the CPP does, but this is a way to create a constant
+    that will work reliably.  There's other ways but they don't apply in
+    certain situations.
 \item [Fixed Sized Structs] The \ident{Address} struct then uses these
     constants to create a piece of data that is fixed in size making it
     less efficient, but easier to store and read.  The \ident{Database} struct
