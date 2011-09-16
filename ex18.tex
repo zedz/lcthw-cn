@@ -84,16 +84,16 @@ of this program so you can clearly understand it:
         does.
     \item[ex18.c:48] Finally return the newly created and sorted result array \ident{target}.
     \end{description}
-\item [51-68] Three different versions of the \ident{compare\_cb} function type,
+\item[ex18.c:51-68] Three different versions of the \ident{compare\_cb} function type,
     which needs to have the same definition as the \ident{typedef} we created.
     The C compiler will complain to you if you get this wrong and say the types don't
     match.
-\item [74-87] This is a tester for the \func{bubble\_sort} function.  You can 
+\item[ex18.c:74-87] This is a tester for the \func{bubble\_sort} function.  You can 
     see now how I'm also using \ident{compare\_cb} to then pass to \func{bubble\_sort}
     demonstrating how these can be passed around like any other pointers.
-\item [90-103] A simple main function that sets up an array based on integers
+\item[ex18.c:90-103] A simple main function that sets up an array based on integers
     you pass on the command line, then calls the \func{test\_sorting} function.
-\item [105-107] Finally, you get to see how the \ident{compare\_cb} function
+\item[ex18.c:105-107] Finally, you get to see how the \ident{compare\_cb} function
     pointer \ident{typedef} is used.  I simply call \func{test\_sorting} but
     give it the name of \func{sorted\_order}, \func{reverse\_order}, and 
     \func{strange\_order} as the function to use.  The C compiler then finds
