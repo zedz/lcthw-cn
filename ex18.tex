@@ -58,31 +58,31 @@ an array or integers using a comparison callback.  Here's the breakdown
 of this program so you can clearly understand it:
 
 \begin{description}
-\item[1-6] The usual includes needed for all the functions we call.
-\item[7-17] This is the \func{die} function from the previous exercise
+\item[ex18.c:1-6] The usual includes needed for all the functions we call.
+\item[ex18.c:7-17] This is the \func{die} function from the previous exercise
     which I'll use to do error checking.
-\item[21] This is where the \ident{typedef} is used, and later I use 
+\item[ex18.c:21] This is where the \ident{typedef} is used, and later I use 
     \ident{compare\_cb} like it's a type similar to \ident{int} or 
     \ident{char} in \func{bubble\_sort} and \func{test\_sorting}.
-\item[27-49] A bubble sort implementation, which is a very inefficient way
+\item[ex18.c:27-49] A bubble sort implementation, which is a very inefficient way
     to sort some integers.  This function contains:
     \begin{description}
-    \item[27] Here's where I use the \ident{typedef} for \ident{compare\_cb}
+    \item[ex18.c:27] Here's where I use the \ident{typedef} for \ident{compare\_cb}
         as the last parameter \ident{cmp}.  This is now a function that will
         return a comparison between two integers for sorting.
-    \item[29-34] The usual creation of variables on the stack, followed by
+    \item[ex18.c:29-34] The usual creation of variables on the stack, followed by
     a new array of integers on the heap using \func{malloc}.  Make sure you
     understand what \verb|count * sizeof(int)| is doing.
-    \item[38] The outer-loop of the bubble sort.
-    \item[39] The inner-loop of the bubble sort
-    \item[40] Now I call the \func{cmp} callback just like it's a normal
+    \item[ex18.c:38] The outer-loop of the bubble sort.
+    \item[ex18.c:39] The inner-loop of the bubble sort
+    \item[ex18.c:40] Now I call the \func{cmp} callback just like it's a normal
         function, but instead of being the name of something we defined, 
         it's just a pointer to it.  This lets the caller pass in anything
         they want as long as it matches the "signature" of the \ident{compare\_cb}
         \ident{typedef}.
-    \item[41-43] The actual swapping operation a bubble sort needs to do what it
+    \item[ex18.c:41-43] The actual swapping operation a bubble sort needs to do what it
         does.
-    \item[48] Finally return the newly created and sorted result array \ident{target}.
+    \item[ex18.c:48] Finally return the newly created and sorted result array \ident{target}.
     \end{description}
 \item [51-68] Three different versions of the \ident{compare\_cb} function type,
     which needs to have the same definition as the \ident{typedef} we created.
@@ -102,7 +102,7 @@ of this program so you can clearly understand it:
     see it then passes each of these to \func{bubble\_sort} but it actually
     has no idea what they do, only that they match the \ident{compare\_cb} 
     prototype and should work.
-\item[109] Last thing we do is free up the array of numbers we made.
+\item[ex18.c:109] Last thing we do is free up the array of numbers we made.
 \end{description}
 
 
