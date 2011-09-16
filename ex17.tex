@@ -65,6 +65,10 @@ key things I'm doing that you should pay attention to as well:
     that I'm using \func{malloc} to ask the OS for a large amount of memory
     to work with when I create the \ident{Database}.  I cover this in more
     detail below.
+\item [NULL is 0 so boolean works] In many of the checks I'm testing that a
+    pointer is not NULL by simply doing \verb|if(!ptr) die("fail!")| this is
+    valid because NULL is the same as 0 so it will evaluate to false.  You could
+    be explicit and say \verb|if(ptr == NULL) die("fail!")| as well.
 \end{description}
 
 
