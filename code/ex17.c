@@ -59,7 +59,10 @@ struct Connection* Database_open(const char *filename, char mode)
         conn->file = fopen(filename, "w");
     } else {
         conn->file = fopen(filename, "r+");
-        Database_load(conn);
+
+        if(conn->file) {
+            Database_load(conn);
+        }
     }
 
     if(!conn->file) die("Failed to open the file");
@@ -105,6 +108,7 @@ void Database_set(struct Connection *conn, int id, const char *name, const char 
     if(addr->set) die("Alread set, delete it first");
 
     addr->set = 1;
+    // WARNING: bug, read the "How To Break It" and fix this
     char *res = strncpy(addr->name, name, MAX_DATA);
     // demonstrate the strncpy bug
     if(!res) die("Name copy failed");

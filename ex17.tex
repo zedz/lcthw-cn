@@ -14,7 +14,53 @@ As usual, type this whole program in and get it working, then we'll discuss:
 << d['code/ex17.c|pyg|l'] >>
 \end{code}
 
-TODO: Explain the program....
+In this program I am using a set of structures to create a simple
+database for an address book.  In it I'm using some things you've never
+seen, so you should go through it line-by-line, explain what each line
+does, and look up any functions you do not recognize.  There are few
+key things I'm doing that you should pay attention to as well:
+
+\begin{description}
+\item [#define for constants] I use another part of the "C Pre-Processor" to
+    create constant settings of \ident{MAX\_DATA} and \ident{MAX\_ROWS}.
+\item [Fixed Sized Structs] The \ident{Address} struct then uses these
+    constants to create a piece of data that is fixed in size making it
+    less efficient, but easier to store and read.  The \ident{Database} struct
+    is then also fixed size because it is a fixed length array of \ident{Address}
+    structs.  That lets you write the whole thing to disk in one move later on.
+\item [die function to abort with an error] In a small program like this you
+    can make a single function that kills the program with an error if there's
+    anything wrong.  I call this \func{die}, and it's used after any failed
+    function calls or bad inputs to exit with an error using \func{exit}.
+\item [errno and perror() for error reporting] When you have an error return
+    from a function, it will usually set an "external" variable called \ident{errno}
+    to say exactly what error happened.  These are just numbers, so you can use
+    \func{perror} to "print the error message".
+\item [FILE functions] I'm using all new functions like \func{fopen}, \ident{fread},
+    \ident{fclose}, and \ident{rewind} to work with files.  Each of these functions
+    works on a \ident{FILE} struct that's just like your structs, but it's defined
+    by the C standard library.
+\item [nested struct pointers] There's use of nested structures and getting the
+    address of array elements that you should study.  Specifically code like
+    \verb|&conn->db->rows[i]| which reads "get the \ident{i} element of \ident{rows}, which is
+    in \ident{db}, which is in \ident{conn}, then get the address of (\ident{\&}) it".
+\item [copying struct prototypes] best shown in \func{Database\_delete}, you can
+    see I'm using a temporary local \ident{Address}, initializing its \ident{id}
+    and \ident{set} fields, and then simply copying it into the \ident{rows} array by
+    assigning it to the element I want.  This trick makes sure that all fields
+    but \ident{set} and \ident{id} are initialized to 0s and is actually 
+    easier to write.  Incidentally, you shouldn't be using \func{memcpy} to do
+    these kinds of struct copying operations. Modern C allows you to simply assign
+    one struct to another and it'll handle the copying for you.
+\item [processing complex arguments] I'm doing some more complex argument parsing,
+    but this isn't really the best way to do it.  We'll get into better option
+    parsing later in the book.
+\item [allocating large data on the "heap"] The whole point of this program is
+    that I'm using \func{malloc} to ask the OS for a large amount of ram
+    to work with when I create the \ident{Database}.  I cover this in more
+    detail below.
+\end{description}
+
 
 \section{What You Should See}
 
@@ -38,6 +84,10 @@ but sometimes it's just over-reporting from OSX's internal APIs.  If you see it
 showing leaks that aren't inside your code then just ignore them.
 \end{aside}
 
+\section{Heap vs. Stack Allocation}
+
+TODO: Get deeper into this
+
 \section{How To Break It}
 
 This program has a lot of places you can break it, so try some of these
@@ -45,10 +95,19 @@ but also come up with your own:
 
 \begin{enumerate}
 \item The classic way is to remove some of the safety checks such that you can
-    pass in arbitrary data. For example, if you remove the check on line 157
+    pass in arbitrary data. For example, if you remove the check on line 159
     that prevents you from passing in any record number.
 \item You can also try corrupting the data file.  Open it in any editor and
     change random bytes then close it.
+\item You could also find ways to pass bad arguments to the program when it's
+    run, such as getting the file and action backwards will make it create
+    a file named after the action, then do an action based on the first
+    character.
+\item There is a bug in this program because of \func{strncpy} being poorly
+    designed.  Go read about \func{strncpy} then try to find out what happens
+    when the \ident{name} or \ident{address} you give is \emph{greater} than
+    512 bytes.  Fix this by simply forcing the last character to \verb|'\0'|
+    so that it's always set no matter what (which is what strncpy should do).
 \end{enumerate}
 
 \section{Extra Credit}
@@ -56,7 +115,17 @@ but also come up with your own:
 \begin{enumerate}
 \item The \func{die} function needs to be augmented to let you pass the \ident{conn}
     variable so it can close it and clean up.
+\item Change the code to accept parameters for \ident{MAX\_DATA} and \ident{MAX\_ROWS}, store them in the \ident{Database} struct, and write that to the file, thus creating
+    a database that can be arbitrarily sized.
 \item Add more operations you can do on the database, like \ident{find}.
+\item Read about how C does it's struct packing, and then try to see why your
+    file is the size it is.  See if you can calculate a new size after adding
+    more fields.
+\item Add some more fields to the \ident{Address} and make them searchable.
+\item Write a shell script that will do your testing automatically for you
+    by running commands in the right order.  Hint: Use \verb|set -e| at the
+    top of a \program{bash} to make it abort the whole script if any command
+    has an error.
 \item Try reworking the program to use a single global for the database connection.
     How does this new version of the program compare to the other one?
 \end{enumerate}
