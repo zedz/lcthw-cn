@@ -8,11 +8,108 @@ pointer at a function too.  The main use for this is to pass
 objects.  In this exercise we'll do some callbacks, and in
 the next one we'll make a simple object system.
 
+The format of a function pointer goes like this:
+
+\verb|int (*POINTER_NAME)(int a, int b)|
+
+A way to remember how to write one is to do this:
+
+\begin{enumerate}
+\item Write a normal function declaration: \verb|int callme(int a, int b)|
+\item Wrap function name with pointer syntax: \verb|int (*callme)(int a, int b)|
+\item Change the name to the pointer name: \verb|int (*compare_cb)(int a, int b)|
+\end{enumerate}
+
+The key thing to remember is, when you're done with this, the \emph{variable}
+name for the pointer is called \emph{compare\_cb} and then you use it
+just like it's a function.  This is similar to how pointers to arrays can
+be used just like the arrays they point to.  Pointers to functions can be
+used like the functions they point to but with a different name.
+
+\begin{code}{Using A Raw Function Pointer}
+\begin{lstlisting}
+    int (*tester)(int a, int b) = sorted_order;
+    printf("TEST: %d is same as %d\n", tester(2, 3));
+\end{lstlisting}
+\end{code}
+
+This will work even if the function pointer returns a pointer to something:
+
+\begin{enumerate}
+\item Write it: \verb|char *make_coolness(int awesome_levels)|
+\item Wrap it: \verb|char *(*make_coolness)(int awesome_levels)|
+\item Rename it: \verb|char *(*coolness_cb)(int awesome_levels)|
+\end{enumerate}
+
+The next problem to solve with using function pointers is that it's hard to
+give them as paramters to a function, like when you want to pass the function
+callback to another function.  The solution to this is to use \ident{typedef}
+which is a C keyword for making new names for other more complex types.
+The only thing you need to do is put \ident{typedef} before the same 
+function pointer syntax, and then after that you can use the name like
+it's a type.  I demonstrate this in the following exercise code:
+
 \begin{code}{ex18.c}
 << d['code/ex18.c|pyg|l'] >>
 \end{code}
 
+In this program you're creating a dynamic sorting algorithm that can sort
+an array or integers using a comparison callback.  Here's the breakdown
+of this program so you can clearly understand it:
+
+\begin{description}
+\item[1-6] The usual includes needed for all the functions we call.
+\item[7-17] This is the \func{die} function from the previous exercise
+    which I'll use to do error checking.
+\item[21] This is where the \ident{typedef} is used, and later I use 
+    \ident{compare\_cb} like it's a type similar to \ident{int} or 
+    \ident{char} in \func{bubble\_sort} and \func{test\_sorting}.
+\item[27-49] A bubble sort implementation, which is a very inefficient way
+    to sort some integers.  This function contains:
+    \begin{description}
+    \item[27] Here's where I use the \ident{typedef} for \ident{compare\_cb}
+        as the last parameter \ident{cmp}.  This is now a function that will
+        return a comparison between two integers for sorting.
+    \item[29-34] The usual creation of variables on the stack, followed by
+    a new array of integers on the heap using \func{malloc}.  Make sure you
+    understand what \verb|count * sizeof(int)| is doing.
+    \item[38] The outer-loop of the bubble sort.
+    \item[39] The inner-loop of the bubble sort
+    \item[40] Now I call the \func{cmp} callback just like it's a normal
+        function, but instead of being the name of something we defined, 
+        it's just a pointer to it.  This lets the caller pass in anything
+        they want as long as it matches the "signature" of the \ident{compare\_cb}
+        \ident{typedef}.
+    \item[41-43] The actual swapping operation a bubble sort needs to do what it
+        does.
+    \item[48] Finally return the newly created and sorted result array \ident{target}.
+    \end{description}
+\item [51-68] Three different versions of the \ident{compare\_cb} function type,
+    which needs to have the same definition as the \ident{typedef} we created.
+    The C compiler will complain to you if you get this wrong and say the types don't
+    match.
+\item [74-87] This is a tester for the \func{bubble\_sort} function.  You can 
+    see now how I'm also using \ident{compare\_cb} to then pass to \func{bubble\_sort}
+    demonstrating how these can be passed around like any other pointers.
+\item [90-103] A simple main function that sets up an array based on integers
+    you pass on the command line, then calls the \func{test\_sorting} function.
+\item [105-107] Finally, you get to see how the \ident{compare\_cb} function
+    pointer \ident{typedef} is used.  I simply call \func{test\_sorting} but
+    give it the name of \func{sorted\_order}, \func{reverse\_order}, and 
+    \func{strange\_order} as the function to use.  The C compiler then finds
+    the address of those functions, and makes it a pointer for 
+    \func{test\_sorting} to use.  If you look at \func{test\_sorting} you'll
+    see it then passes each of these to \func{bubble\_sort} but it actually
+    has no idea what they do, only that they match the \ident{compare\_cb} 
+    prototype and should work.
+\item[109] Last thing we do is free up the array of numbers we made.
+\end{description}
+
+
 \section{What You Should See}
+
+Running this program is simple, but try different combinations of numbers, and
+try even non-numbers to see what it does.
 
 \begin{code}{ex18 output}
 \begin{lstlisting}
@@ -23,8 +120,52 @@ the next one we'll make a simple object system.
 
 \section{How To Break It}
 
+I'm going to have you do something kind of weird to break this.  These function
+pointers are pointers like every other pointer, so they point at blocks of
+memory.  C has this ability to take one pointer and convert it to another so
+you can process the data in different ways.  It's usually not necessary, but
+to show you how to hack your computer, I want you to add this at the end of
+\func{test\_sorting}:
+
+\begin{code}{Function Pointer Evil}
+\begin{lstlisting}
+    unsigned char *data = (unsigned char *)cmp;
+
+    for(i = 0; i < 25; i++) {
+        printf("%0x:", data[i]);
+    }
+    printf("\n");
+\end{lstlisting}
+\end{code}
+
+This loop is sort of like converting your function to a string and then
+printing out it's contents.  This won't break your program unless the CPU and
+OS you're on has a problem with you doing this.  What you'll see is a string of
+hexadecimal numbers after it prints the sorted array:
+
+\begin{Verbatim}
+55:48:89:e5:89:7d:fc:89:75:f8:8b:55:fc:8b:45:f8:29:d0:c9:c3:55:48:89:e5:89:
+\end{Verbatim}
+
+That should be the raw assembler byte code of the function itself, and you
+should see they start the same, but then have different endings.  It's also
+possible that this loop isn't getting all of the function or is getting too
+much and stomping on another piece of the program.  Without more analysis
+you wouldn't know.
 
 \section{Extra Credit}
 
+\begin{enumerate}
+\item Get a hex editor and open up \program{ex18}, then find this sequence
+    of hex digits that start a function to see if you can find the function
+    in the raw program.
+\item Pass in the wrong function for the \ident{compare\_cb} and see what
+    the C compiler complains about.
+\item Pass in NULL and watch your program seriously bite it.  Then run
+    \program{Valgrind} and see what that reports.
+\item Write another sorting algorithm, then change \func{test\_sorting} so
+    that it takes \emph{both} an arbitrary sort function and the sort function's
+    callback comparison.  Use it to test both of your algorithms.
+\end{enumerate}
 
 
