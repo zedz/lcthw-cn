@@ -2,6 +2,7 @@
     "*.tex|jinja" : { "allinputs" : true },
     "*.py|pyg|l": {},
     "*.c|pyg|l": {},
+    "*.h|pyg|l": {},
     "*.sh|pyg|l": {},
     "*.conf|dexy": {},
     "*.Makefile|dexy": {},
