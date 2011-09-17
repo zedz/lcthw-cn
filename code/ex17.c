@@ -7,7 +7,6 @@
 #define MAX_DATA 512
 #define MAX_ROWS 100
 
-/** Teach that we design the data first and get that right. */
 struct Address {
     int id;
     int set;
