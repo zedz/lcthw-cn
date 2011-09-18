@@ -99,7 +99,7 @@ Yes, that's it, and here's what every line does:
 \item[14] The \func{clean\_errno} macro that's used in the others to get a
     safe readable version of \ident{errno}.  That strange syntax in the
     middle is a "ternary operator" and you'll learn what it does later.
-\item[16-20] The \func{log\_err}, \funct{log\_warn}, and \func{log\_info},
+\item[16-20] The \func{log\_err}, \func{log\_warn}, and \func{log\_info},
     macros for logging messages meant for the end user.  Works
     like \func{debug} but can't be compiled out.
 \item[22] The best macro ever, \func{check} will make sure the condition
