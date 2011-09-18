@@ -85,7 +85,7 @@ Yes, that's it, and here's what every line does:
 \item[9] If you compile with \ident{NDEBUG} defined, then "no debug" messages
     will remain.  You can see in this case the \ident{\#define debug()} is just
     replaced with nothing (the right side is empty).
-\item[10] The matching \ident{\#else} for the above \ident{#ifdef}.
+\item[10] The matching \ident{\#else} for the above \ident{\#ifdef}.
 \item[11] The alternative \ident{\#define debug} that translates any use
     of \verb|debug("format", arg1, arg2)| into an \func{fprintf} call 
     to \ident{stderr}.  Many C programmers don't know, but you can create
