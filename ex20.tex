@@ -1,30 +1,165 @@
-\chapter{Exercise 20: Advanced Data Types }
+\chapter{Exercise 20: Zed's Awesome Debug Macros}
 
-You've been exposed to different ways to structure data and how C perceives 
-that data in your computer's memory, so now we'll cover all the remaining
-specific information about types and the data they can hold.  This exercise
-is more of a reference that explains different things C does, with code examples
-for each.  You'll then be tasked with making flash cards and memorizing them
-so you know them cold.
+There is a constant problem in C that you have been dancing around but which I
+am going to solve in this exercise.  You can thank me later when you realize
+how insanely awesome these macros are.  Right now you won't realize how awesome
+they are, so you'll just have to use them and then you can walk up to me one
+day and say, "Zed, those Debug Macros were the bomb. I owe you my first born
+child because you saved me a decade of heartache and prevented me from killing
+myself more than once. Thank you good sir, here's a million dollars and the
+original Snakehead Telecaster prototype signed by Leo Fender."
 
-\section{Available Data Types}
+Yes, they are that awesome.
+
+\section{The C Error Handling Problem}
+
+In almost every programming language handling errors is a difficult activity.
+There's entire programming languages that try as hard as they can to avoid even
+the concept of an error.  Other languages invent complex control structures
+like exceptions to pass error conditions around.  The problem exists mostly
+because programmers assume errors don't happen and this optimism infects the
+type of languages they use and create.
+
+C tackles the problem by returning error codes and setting a global
+\ident{errno} value that you check.  This makes for complex code that
+simply exists to check if something you did had an error.  As you 
+write more and more C code you'll write code with the pattern:
+
+\begin{enumerate}
+\item Call a function.
+\item If the return value is an error (must look that up each time too).
+\item Then cleanup all the resource created so far.
+\item and print out an error message that hopefully helps.
+\end{enumerate}
+
+This means for every function call (and yes, \emph{every}) function
+you are potentially writing 3-4 more lines just to make sure it worked.
+That doesn't include the problem of cleaning up all of the junk you've
+built to that point.  If you have 10 different structures, 3 files, and
+a database connection, when you get an error then you
+would have 14 more lines.
+
+In the past this wasn't a problem because C programs did what you've
+been doing when there's an error: die.  No point in bothering with cleanup
+when the OS will do it for you.  Today though many C programs need to run
+for weeks, months, or years and handle errors from as many different sources
+gracefully.  You can't just have your webserver die at the slightest 
+touch, and you definitely can't have a library you've written nuke a
+the program its used in.  That's just rude.
+
+Other languages solve this problem with exceptions, but those have problems
+in C (and in other languages too).  In C you only have one return value,
+but exceptions are an entire stack based return system with arbitrary
+values.  Trying to marshal exceptions up the stack in C is difficult, and
+no other libraries will understand it.
+
+\section{The Debug Macros}
+
+The solution I've been using for years is a small set of "debug macros"
+that implement a basic debugging and error handling system for C.  This
+system is easy to understand, works with every library, and makes C code
+more solid and clearer.
+
+It does this by adopting the convention that whenever there's an error, your
+function will jump to an "error:" part of the function that knows how to
+cleanup everything and return an error code.  You use a macro called
+\func{check} to check return codes, print an error message, and then
+jump to the cleanup section.  You combine that with a set of logging
+functions for printing out useful debug messages.
+
+I'll now show you the entire contents of the most awesome set of brilliance
+you've ever seen:
+
+\begin{code}{dbg.h}
+<< d['code/dbg.h|pyg|l'] >>
+\end{code}
+
+Yes, that's it, and here's what every line does:
+
+\begin{description}
+\item[1-2] The usual defense against accidentally including the file
+    twice, which you saw in the last exercise.
+\item[4-6] Includes for the functions that these macros need.
+\item[8] The start of a \ident{\#ifdef} which let's you recompile your
+    program so that all the debug log messages are removed.
+\item[9] If you compile with \ident{NDEBUG} defined, then "no debug" messages
+    will remain.  You can see in this case the \ident{\#define debug()} is just
+    replaced with nothing (the right side is empty).
+\item[10] The matching \ident{\#else} for the above \ident{#ifdef}.
+\item[11] The alternative \ident{\#define debug} that translates any use
+    of \verb|debug("format", arg1, arg2)| into an \func{fprintf} call 
+    to \ident{stderr}.  Many C programmers don't know, but you can create
+    macros that actually work like \func{printf} and take variable arguments.
+    Some C compilers (actually cpp) don't support this, but the ones that matter do.
+    The magic here is the use of \verb|##__VA_ARGS__| which says 
+    "put whatever they had for extra arguments (...) here".  Also notice 
+    the use of \ident{\_\_FILE\_\_} and \ident{\_\_LINE\_\_} to get the
+    current file:line for the debug message.  \emph{Very} helpful.
+\item[12] The end of the \ident{\#ifdef}.
+\item[14] The \func{clean\_errno} macro that's used in the others to get a
+    safe readable version of \ident{errno}.  That strange syntax in the
+    middle is a "ternary operator" and you'll learn what it does later.
+\item[16-20] The \func{log\_err}, \funct{log\_warn}, and \func{log\_info},
+    macros for logging messages meant for the end user.  Works
+    like \func{debug} but can't be compiled out.
+\item[22] The best macro ever, \func{check} will make sure the condition
+    \ident{A} is true, and if not logs the error \ident{M} (with variable
+    arguments for \func{log\_err}), then jumps to the function's \ident{error:}
+    for cleanup.
+\item[24] The 2nd best macro ever, \func{sentinel} is placed in any part of a
+    function that shouldn't run, and if it does prints an error message then
+    jumps to the \ident{error:} label.  You put this in \ident{if-statements}
+    and \ident{switch-statements} to catch conditions that shouldn't happen,
+    like the \ident{default:}.
+\item[26] A short-hand macro \func{check\_mem} that makes sure a pointer is 
+    valid, and if it isn't reports it as an error with "Out of memory."
+
+\item[28] An alternative macro \func{check\_debug} that still checks and
+    handles an error, but if the error is common then you don't want to bother
+    reporting it.  In this one it will use \func{debug} instead of \func{log\_err}
+    to report the message, so when you define \ident{NDEBUG} the check still
+    happens, the error jump goes off, but the message isn't printed.
+\end{description}
+
+\section{Using dbg.h}
+
+Here's an example of using all of \file{dbg.h} in a small program.
+This doesn't actually do anything but demonstrate how to use each
+macro, but we'll be using these macros in all of the programs we
+write from now on, so be sure to understand how to use them.
+
+\begin{code}{ex20.c}
+<< d['code/ex20.c|pyg|l'] >>
+\end{code}
+
+Pay attention to how \func{check} is used, and how when it is
+\ident{false} it will jump to the \ident{error:} label to do a cleanup.
+The way to read those lines is, "check that A is true and if not say M
+and jump out."
 
 
-\section{Type Conversion}
+\section{What You Should See}
 
+When you run this, give it some bogus first parameter and you should see
+this:
 
-\section{Math Operations}
+\begin{code}{ex20 output}
+\begin{lstlisting}
+<< d['code/ex20.out|dexy'] >>
+\end{lstlisting}
+\end{code}
 
-
-\section{Boolean Operations}
-
+See how it reports the exact line number where the \func{check} failed?
+That's going to save you hours of debugging later.
 
 \section{Extra Credit}
 
-
 \begin{enumerate}
-\item Take the tables of information presented in this chapter, and write up
-    flash cards for each row.  Use these flash cards to spend 15 minutes a
-    day (or more) memorizing everything you can.
+\item Put \verb|#define NDEBUG| at the top of the file and check that all
+    the debug messages go away.
+\item Undo that line, and add \verb|-DNDEBUG| to \ident{CFLAGS} at the
+    top of the \file{Makefile} then recompile to see the same thing.
+\item Modify the logging so that it include the function name as well
+    as the file:line.
 \end{enumerate}
 
