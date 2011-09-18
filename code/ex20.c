@@ -32,10 +32,13 @@ void test_log_info()
 
 int test_check(char *file_name)
 {
-    char *block = malloc(100);
+    FILE *input = NULL;
+    char *block = NULL;
+
+    block = malloc(100);
     check_mem(block); // should work
 
-    FILE *input = fopen(file_name,"r");
+    input = fopen(file_name,"r");
     check(input, "Failed to open %s.", file_name);
 
     free(block);
