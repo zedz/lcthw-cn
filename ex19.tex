@@ -16,7 +16,7 @@ because you need it to start using multiple files in your own software.
 \section{How The CPP Works}
 
 The C Pre-Processor is a template processing system.  It's a highly
-targetted one that helps make C easier to work with, but it does
+targeted one that helps make C easier to work with, but it does
 this by having a syntax aware templating mechanism.  Traditionally
 people just used the CPP to store constants and make "macros" to simplify
 repetitive coding.  In modern C you'll actually use the CPP as a code
@@ -62,7 +62,7 @@ traditional class based one.
 
 I want to put the data types and function declarations into a separate
 header file named \file{object.h}.  This is standard C practice and it
-lets you ship binary libraries but still let the programmer comile against
+lets you ship binary libraries but still let the programmer compile against
 it.  In this file I have several advanced CPP techniques I'm going to
 quickly describe and then have you see in action later:
 
@@ -227,7 +227,7 @@ Here's the important key things to study and understand:
     \verb|monster->_(attack)(monster, damage)| you see that I'm using the
     macro, which gets replaced with \verb|monster->proto.attack(monster, damage)|.
     Study this transformation again by rewriting these calls back to their 
-    original.  Also, if you get stuck then run cpp manually to see what it's
+    original.  Also, if you get stuck then run \program{cpp} manually to see what it's
     going to do.
 \item I'm using two new functions \func{srand} and \func{rand}, which setup
     a simple random number generator good enough for the game.  I also use
@@ -251,7 +251,7 @@ Here's me playing my own game:
 \section{Auditing The Game}
 
 As an exercise for you I have left out all of the \func{assert} checks
-I normally put into a piece of software.  You've seen me use assert to
+I normally put into a piece of software.  You've seen me use \func{assert} to
 make sure a program is running correctly, but now I want you to go back
 and do the following:
 
@@ -262,7 +262,7 @@ and do the following:
     you want a \verb|assert(description != NULL)|.
 \item Go through each line of the function, and find any functions
     being called.  Read the documentation (man page) for that function,
-    and confirm what it returns for an error.  Add anothe assert to
+    and confirm what it returns for an error.  Add another assert to
     check that the error didn't happen.  For example, in \func{Object\_new}
     you need one after the call to \func{calloc} that does \verb|assert(el != NULL)|.
 \item If a function is expected to return a value, either make sure it returns
@@ -290,7 +290,7 @@ then write code to prevent it or abort early if you can.
     the \file{Makefile} so you can run \program{make test} and it'll thrash
     the game with your script.
 \item Add more rooms and monsters to the game.
-\item Put the game mechanics into a third files, compile it to .o, and then
+\item Put the game mechanics into a third file, compile it to .o, and then
     use that to write another little game.  If you're doing it right
     you should only have a new \ident{Map} and a \func{main} function
     in the new game.
