@@ -43,7 +43,7 @@ would have 14 more lines.
 In the past this wasn't a problem because C programs did what you've
 been doing when there's an error: die.  No point in bothering with cleanup
 when the OS will do it for you.  Today though many C programs need to run
-for weeks, months, or years and handle errors from as many different sources
+for weeks, months, or years and handle errors from many different sources
 gracefully.  You can't just have your webserver die at the slightest 
 touch, and you definitely can't have a library you've written nuke a
 the program its used in.  That's just rude.
@@ -78,16 +78,16 @@ you've ever seen:
 Yes, that's it, and here's what every line does:
 
 \begin{description}
-\item[1-2] The usual defense against accidentally including the file
+\item[dbg.h:1-2] The usual defense against accidentally including the file
     twice, which you saw in the last exercise.
-\item[4-6] Includes for the functions that these macros need.
-\item[8] The start of a \ident{\#ifdef} which let's you recompile your
+\item[dbg.h:4-6] Includes for the functions that these macros need.
+\item[dbg.h:8] The start of a \ident{\#ifdef} which let's you recompile your
     program so that all the debug log messages are removed.
-\item[9] If you compile with \ident{NDEBUG} defined, then "no debug" messages
+\item[dbg.h:9] If you compile with \ident{NDEBUG} defined, then "no debug" messages
     will remain.  You can see in this case the \ident{\#define debug()} is just
     replaced with nothing (the right side is empty).
-\item[10] The matching \ident{\#else} for the above \ident{\#ifdef}.
-\item[11] The alternative \ident{\#define debug} that translates any use
+\item[dbg.h:10] The matching \ident{\#else} for the above \ident{\#ifdef}.
+\item[dbg.h:11] The alternative \ident{\#define debug} that translates any use
     of \verb|debug("format", arg1, arg2)| into an \func{fprintf} call 
     to \ident{stderr}.  Many C programmers don't know, but you can create
     macros that actually work like \func{printf} and take variable arguments.
@@ -96,26 +96,26 @@ Yes, that's it, and here's what every line does:
     "put whatever they had for extra arguments (...) here".  Also notice 
     the use of \ident{\_\_FILE\_\_} and \ident{\_\_LINE\_\_} to get the
     current file:line for the debug message.  \emph{Very} helpful.
-\item[12] The end of the \ident{\#ifdef}.
-\item[14] The \func{clean\_errno} macro that's used in the others to get a
+\item[dbg.h:12] The end of the \ident{\#ifdef}.
+\item[dbg.h:14] The \func{clean\_errno} macro that's used in the others to get a
     safe readable version of \ident{errno}.  That strange syntax in the
     middle is a "ternary operator" and you'll learn what it does later.
-\item[16-20] The \func{log\_err}, \func{log\_warn}, and \func{log\_info},
+\item[dbg.h:16-20] The \func{log\_err}, \func{log\_warn}, and \func{log\_info},
     macros for logging messages meant for the end user.  Works
     like \func{debug} but can't be compiled out.
-\item[22] The best macro ever, \func{check} will make sure the condition
+\item[dbg.h:22] The best macro ever, \func{check} will make sure the condition
     \ident{A} is true, and if not logs the error \ident{M} (with variable
     arguments for \func{log\_err}), then jumps to the function's \ident{error:}
     for cleanup.
-\item[24] The 2nd best macro ever, \func{sentinel} is placed in any part of a
+\item[dbg.h:24] The 2nd best macro ever, \func{sentinel} is placed in any part of a
     function that shouldn't run, and if it does prints an error message then
     jumps to the \ident{error:} label.  You put this in \ident{if-statements}
     and \ident{switch-statements} to catch conditions that shouldn't happen,
     like the \ident{default:}.
-\item[26] A short-hand macro \func{check\_mem} that makes sure a pointer is 
+\item[dbg.h:26] A short-hand macro \func{check\_mem} that makes sure a pointer is 
     valid, and if it isn't reports it as an error with "Out of memory."
 
-\item[28] An alternative macro \func{check\_debug} that still checks and
+\item[dbg.h:28] An alternative macro \func{check\_debug} that still checks and
     handles an error, but if the error is common then you don't want to bother
     reporting it.  In this one it will use \func{debug} instead of \func{log\_err}
     to report the message, so when you define \ident{NDEBUG} the check still
