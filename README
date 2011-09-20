@@ -1,3 +1,15 @@
 This will be a book teaching C programming to anyone who has already learned
 one other programming language.  It will teach modern C with heavy emphasis
 on reliable programming.
+
+If one wants to build this book locally, the `dexy` tool (>=0.4.0) and a suite
+of LaTeX tools that includes the "iwona" library must be installed.  Assuming
+one is running a recent Debian-based Linux distribution such as Ubuntu, the
+LaTeX dependencies may be satisfied with the `texlive-full` package:
+
+    aptitude install texlive-full
+
+The latest version of the `dexy` tool may be installed from github:
+
+    git clone https://github.com/ananelson/dexy.git
+    cd dexy && python setup.py install
