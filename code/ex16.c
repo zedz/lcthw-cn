@@ -62,7 +62,7 @@ int main(int argc, char *argv[])
     Person_print(joe);
 
     frank->age += 20;
-    joe->weight += 20;
+    frank->weight += 20;
     Person_print(frank);
 
     // destroy them both so we clean up
