@@ -85,35 +85,69 @@ If you follow these rules, do everything in the book, and still can't
 code C then you at least tried.  It's not for everyone, but the act
 of trying will make you a better programmer.
 
-\section*{About "The Hard Way"}
+\section*{How To Learn From This Book}
 
-I wrote about the philosophy of "The Hard Way" in my first book using
-this method, but I'll paraphrase it again since I'm assuming you've
-read my other beginner books or know what you're doing.
+I'm going to guess that you come from a language for weaklings.  One of those
+"usable" languages that lets you get away with sloppy thinking and half-assed
+hackery like Python or Ruby.  Or, maybe you use a language like Lisp that pretends the
+computer is some purely functional fantasy land with padded walls for little babies.
+Maybe you've learned Prolog and you think the entire world should just be a database
+that you walk around in looking for clues.  Even worse, I'm betting you've been
+using an IDE, so your brain is riddled with memory holes and you can't even
+type out an entire function's name without hitting CTRL-SPACE every 3 characters
+you type.
 
-The key to "The Hard Way" isn't that this material is difficult, but
-instead that it's "hard" because to be good at things you have to
-practice.  Practice is sometimes painful, annoying, and tedious.  You
-have to work and sweat to get what seems like absolutely no benefits
-in the beginning.  But, if you work at it and focus on learning as
-exactly as possible, then one day suddenly you can do it.
+No matter what your background, you are probably bad at four skill that this
+book will try to teach you:
 
-This book is organized so that, in the first section, you are doing
-what seems like tedious boring irritating rote work.  This section
-is all about making you strong and getting you the foundation skills.
-The second half of the book is about applying those skills to more
-fun problems and exploring all the things the language has to offer.
-You might think you can skip the foundational skills at the beginning,
-but if you do then you'll be missing out on gaining confidence and
-building your "chops".
+\begin{description}
+\item[Reading And Writing] This is especially true if you use an IDE, but
+    generally I find programmers do too much "skimming" and have problems
+    reading for comprehension.  They'll skim code they need to understand
+    in detail and think they understand it when they really don't.  Other languages
+    provide tools that also let them avoid actually writing any code, so
+    when faced with a language like C they break down.  Simplest thing to
+    do is just understand \emph{everyone} has this problem, and you can fix
+    it by forcing yourself to slow down and be meticulous about your reading
+    and writing.  At first it'll feel painful and annoying, but take frequent
+    breaks, and then eventually it'll be easy to do.
 
-One tip for you if you find yourself really irritated at a particular
-exercise is to \emph{take breaks}.  When you feel that annoyance build
-up, just take a break and watch some TV or play video games.  I go play
-guitar.  After a little bit, come back and keep going.  Even if you just
-do it in 5 minute spurts, eventually you'll build up your stamina and
-be able to write code for hours on end, lost in it.
+\item[Attention To Detail] Everyone is bad at this, and it's the biggest cause
+    of bad software.  Other languages let you get away with not paying attention,
+    but C demands your full attention because it is right in the machine and the
+    machine is very picky.  With C there is no "kind of similar" or "close enough",
+    so you need to pay attention.  Double check your work.  Assume everything you
+    write is wrong until you prove it's right.
 
+\item[Spotting Differences] A key problem people from other languages have is 
+    their brain has been trained to spot differences in \emph{that} language,
+    not in C.  When you compare code you've written to my exercise code your
+    eyes will jump right over characters you think don't matter or that aren't
+    familiar.  I'll be giving you strategies that force you to see your 
+    mistakes, but keep in mind that if your code is not \emph{exactly} like
+    the code in this book it is wrong.
+
+\item[Planning And Debugging]  I love other easier languages because I can
+    just hang out type the ideas I have into their interpreter and see results.
+    They're great for just hacking out ideas, but have you noticed that if you
+    keep doing "hack until it works" eventually nothing works?  C is harder on
+    you because it requires you to plan out what you'll create first.  Sure,
+    you can hack for a bit, but you have to get serious much earlier in C than
+    other languages.  I'll be teaching you ways to plan out key parts of your
+    program before you start coding, and this will hopefully make you a
+    better programmer at the same time.  Even just a little planning can smooth
+    things out down the road.
+\end{description}
+
+Learning C makes you a better programmer because you are forced to deal with
+these issues earlier and more frequently.  You can't be sloppy and half-assed
+about what you write or nothing will work.  The advantage of C is it's a
+simple language you can figure out on your own, which makes it a great language
+for learning about the machine and getting stronger in these core programmer
+skills.
+
+C is harder than some other languages, but that's only because C's not hiding
+things from you that those other languages try and fail to obfuscate.
 
 \section*{License}
 
