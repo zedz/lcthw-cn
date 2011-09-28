@@ -6,36 +6,245 @@ your knowledge, and won't have any code for you to enter.  I'll have you
 memorize some of the information by creating flash cards so you can get 
 the important concepts solid in your mind.
 
+For this exercise to be useful, you should spend at least a week hammering 
+the content and filling out all the element I have missing here.  You'll be
+writing out what each one means, and then writing a program to confirm
+what you've researched.
+
+
 \section{Available Data Types}
 
 \begin{description}
-\item[(unsigned) int]
-\item[double]
-\item[float]
-\item[(unsigned) char]
+\item[int] Stores a regular integer, defaulting to 32 bits in size.
+\item[double] Holds a large floating point number.
+\item[float] Holds a smaller floating point number.
+\item[char] Holds a single 1 byte character.
+\item[void] Indicates "no type" and used to say a function returns
+    nothing, or a pointer has no type as in \verb|void *thing|.
+\item[enum] Enumerated types, work as integers, convert to integers,
+    but give you symbolic names for sets.  Some compilers will warn
+    you when you don't cover all elements of an enum in \ident{switch-statements}.
+\end{description}
+
+\subsection{Type Modifiers}
+
+\begin{description}
+\item[unsigned] Changes the type so that it does not have negative numbers,
+    giving you a larger upper bound but nothing lower than 0.
+\item[signed] Gives you negative and positive numbers, but halves your 
+    upper bound in exchange for the same lower bound negative.
+\item[long] Uses a larger storage for the type so that it can hold
+    bigger numbers, usually doubling the current size.
+\item[short] Uses smaller storage for the type so it stores less, but
+    takes half the space.
+\end{description}
+
+
+\subsection{Type Qualifiers}
+
+\begin{description}
+\item[const] Indicates the variable won't change after being initialized.
+\item[volatile] Indicates that all bets are off, and the compiler should leave
+    this alone and try not to do any fancy optimizations to it.  You usually
+    only need this if you're doing really weird stuff to your variables.
+\item[register] Forces the compiler to keep this variable in a register, and
+    the compiler can just ignore you.  These days compilers are better at 
+    figuring out where to put variables, so only use this if you actually
+    can measure it improving the speed.
 \end{description}
 
 
 \subsection{Type Conversion}
 
+C uses a sort of "stepped type promotion" mechanism, where it looks at two operands on
+either side of an expression, and promotes the smaller side to match the larger side
+before doing the operation.  If one side of an expression is on this list, then the 
+other side is converted to that type before the operation is done, and this goes
+in this order:
 
-\subsection{Math Operations}
+\begin{enumerate}
+\item long double
+\item double 
+\item float
+\item int (but only \ident{char} and \ident{short int});
+\item long
+\end{enumerate}
+
+If you find yourself trying to figure out how your conversions are working in
+an expression, then don't leave it to the compiler.  Use explicit casting
+operations to make it exactly what you want.  For example, if you have:
+
+\verb|long + char - int * double|
+
+Rather than trying to figure out if it will be converted to double correctly,
+just use casts:
+
+\verb|(double)long - (double)char - (double)int * double|
+
+Putting the type you want in parenthesis before the variable name is how you
+force it into the type you really need.  The important thing though is 
+\emph{always promote up, not down}.  Don't cast \ident{long} into \ident{char}
+unless you know what you're doing.
+
+\subsection{Type Sizes}
+
+There are two header files which define the sizes of C types on the platform
+you use: \file{limits.h} and \file{float.h}.  These are usually macros that
+give a fixed setting for the current computer:
+
+\begin{description}
+\item[CHAR\_BIT]
+\item[SCHAR\_MIN]
+\item[SCHAR\_MAX]
+\item[UCHAR\_MAX]
+\item[CHAR\_MIN]
+\item[CHAR\_MAX]
+\item[SHRT\_MIN]
+\item[SHRT\_MAX]
+\item[USHRT\_MAX]
+\item[INT\_MIN]
+\item[INT\_MAX]
+\item[UINT\_MAX]
+\item[LONG\_MIN]
+\item[LONG\_MAX]
+\item[ULONG\_MAX]
+\item[LLONG\_MIN]
+\item[LLONG\_MAX]
+\item[ULLONG\_MAX]
+\end{description}
+
+\section{Available Operators}
+
+This is a comprehensive list of all the operators you have in the C language.
+In this list, I'm indicating the following:
+
+\begin{description}
+\item[(binary)] The operator has a left and right: \verb|X + Y|.
+\item[(unary)] The operator is on its own: \verb|-X|.
+\item[(prefix)] The operator comes before the variable: \verb|++X|.
+\item[(postfix)] Usually the same as the \ident{(prefix)} version, but placing it
+    after gives it a different meaning: \verb|X++|.
+\item[(ternary)] There's only one of these, so it's actually called the
+    ternary but it means "three operands": \verb|X ? Y : Z|.
+\end{description}
 
 
-\subsection{Boolean Operations}
+\subsection{Math Operators}
 
+These are your basic math operations, plus I put \verb|()| in
+with these since it calls a function and is close to a "math"
+operation.
+
+\begin{description}
+\item[()] Function call.
+\item[* (binary)]
+\item[+ (binary)]
+\item[+ (unary)]
+\item[++ (postfix)]
+\item[++ (prefix)]
+\item[- - (postfix)]
+\item[- - (prefix)]
+\item[- (binary)]
+\item[- (unary)]
+\item[/]
+\end{description}
+
+\subsection{Data Operators}
+
+These are used to access data in different ways and forms.
+
+\begin{description}
+\item[->]
+\item[.]
+\item[\[\]] Array index.
+\item[sizeof]
+\item[\& (unary)] Address of.
+\item[* (unary)] Value of.
+\end{description}
+
+\subsection{Logic Operators}
+
+These handle testing equality and inequality of variables.
+
+\begin{description}
+\item[!=]
+\item[<]
+\item[<=]
+\item[==]
+\item[>]
+\item[>=]
+\end{description}
+
+\subsection{Bit Operators}
+
+These are more advanced and for shifting and modifying the 
+raw bits in integers.
+
+\begin{description}
+\item[\& (binary)] Bitwise and.
+\item[<<] Shift left.
+\item[>>] Shift right.
+\item[\^]
+\item[|]
+\item[~]
+\end{description}
+
+
+\subsection{Boolean Operators}
+
+Used in truth testing.  Study the ternary
+operator carefully, it is very handy.
+
+\begin{description}
+\item[!]
+\item[\&\&]
+\item[?:] Ternary truth test, read \verb|X ? Y : Z| as "if X then Y else Z".
+\item[||]
+\end{description}
+
+\subsection{Assignment Operators}
+
+Compound assignment operators that assign a value, and/or perform
+an operation at the same time.  Most of the above operations
+can also be combined into a compound assignment operator.
+
+\begin{description}
+\item[=]
+\item[\%=]
+\item[&=]
+\item[*=]
+\item[+=]
+\item[-=]
+\item[/=]
+\item[<<=]
+\item[>>=]
+\item[\^=]
+\item[|=]
+\end{description}
 
 \section{Available Control Structures}
 
-\subsection{Do-While}
+There's a few control structures you haven't encountered yet:
 
-\subsection{Break And Continue}
+\begin{description}
+\item[do-while] \verb|do { ... } while(X);| First does the code in the block, then
+    tests the \ident{X} expression before exiting.
+\item[break] Put this in a loop, and it breaks out ending it early.
+\item[continue] Stops the body of a loop and jumps to the test so it can continue.
+\item[goto] Jumps to a spot in the code where you've placed a \verb|label:|, and
+    you've been using this in the \file{dbg.h} macros to go to the \verb|error:|
+    label.
+\end{description}
 
-\subsection{Goto and Labels}
 
 \subsection{Extra Credit}
 
 \begin{enumerate}
+\item Go through each item that I haven't explicitly defined and find out what 
+    its value is by either writing a program t print it out, or finding documentation
+    online telling you this.
 \item Get this information solid as well by making flash cards and spending 15 
     minutes a day memorizing it.
+\item Create a program that prints out examples of each type and confirm that your
+    research is right.
 \end{enumerate}
