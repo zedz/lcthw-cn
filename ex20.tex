@@ -188,7 +188,8 @@ CPP "tricks" that make the CPP useful as a code generation tool.  Take a look
 at the \func{check} and \func{log\_err} macros again:
 
 \begin{Verbatim}
-#define log_err(M, ...) fprintf(stderr, "[ERROR] (%s:%d: errno: %s) " M "\n", __FILE__, __LINE__, clean_errno(), ##__VA_ARGS__)
+#define log_err(M, ...) fprintf(stderr, "[ERROR] (%s:%d: errno: %s) " M "\n",
+    __FILE__, __LINE__, clean_errno(), ##__VA_ARGS__)
 #define check(A, M, ...) if(!(A)) { log_err(M, ##__VA_ARGS__); errno=0; goto error; }
 \end{Verbatim}
 
@@ -212,12 +213,13 @@ fprintf(stderr, "[ERROR] (%s:%d: errno: %s) Age %d: name %d\n",
     __FILE__, __LINE__, clean_errno(), age, name);
 \end{Verbatim}
 
-See the \verb|age, name| at the end, that's how \verb|...| and \verb|##__VA_ARGS__|
-work together, and it will work in macros that call other variable macros.  Look at
-the \func{check} macro now and see it calls \func{log\_err}, but \func{check} is
-\emph{also} using the \verb|...| and \verb|##__VA_ARGS__| to do the call.  That's
-how you can pass full \func{printf} style format strings to \func{check}, which 
-go to \func{log\_err}, and then make both work like \func{printf}.
+See the \verb|age, name| at the end? That's how \verb|...| and
+\verb|##__VA_ARGS__| work together, and it will work in macros that call other
+variable argument macros.  Look at the \func{check} macro now and see it calls
+\func{log\_err}, but \func{check} is \emph{also} using the \verb|...| and
+\verb|##__VA_ARGS__| to do the call.  That's how you can pass full
+\func{printf} style format strings to \func{check}, which go to
+\func{log\_err}, and then make both work like \func{printf}.
 
 Next thing to study is how \func{check} crafts the \ident{if-statement} for the
 error checking.  If we strip out the \func{log\_err} usage we see this:
