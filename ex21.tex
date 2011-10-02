@@ -88,29 +88,62 @@ unless you know what you're doing.
 
 \subsection{Type Sizes}
 
-There are two header files which define the sizes of C types on the platform
-you use: \file{limits.h} and \file{float.h}.  These are usually macros that
-give a fixed setting for the current computer:
+The \file{stdint.h} defines both a set of \ident{typdefs} for exact sized integer
+types, as well as a set of macros for the sizes of all the types.  This is easier
+to work with than the older \file{limits.h} since it is consistent.  The types
+defined are:
 
 \begin{description}
-\item[CHAR\_BIT]
-\item[SCHAR\_MIN]
-\item[SCHAR\_MAX]
-\item[UCHAR\_MAX]
-\item[CHAR\_MIN]
-\item[CHAR\_MAX]
-\item[SHRT\_MIN]
-\item[SHRT\_MAX]
-\item[USHRT\_MAX]
-\item[INT\_MIN]
-\item[INT\_MAX]
-\item[UINT\_MAX]
-\item[LONG\_MIN]
-\item[LONG\_MAX]
-\item[ULONG\_MAX]
-\item[LLONG\_MIN]
-\item[LLONG\_MAX]
-\item[ULLONG\_MAX]
+\item[int8\_t] 8 bit signed integer.
+\item[uint8\_t] 8 bit unsigned integer.
+\item[int16\_t] 16 bit signed integer.
+\item[uint16\_t] 16 bit unsigned integer.
+\item[int32\_t] 32 bit signed integer.
+\item[uint32\_t] 32 bit unsigned integer.
+\item[int64\_t] 64 bit signed integer.
+\item[uint64\_t] 64 bit unsigned integer.
+\end{description}
+
+The pattern here is of the form (u)int(BITS)\_t where a \emph{u} is put in front to indicate
+"unsigned", then \emph{BITS} is a number for the number of bits.  This pattern is then repeated
+for macros that return the maximum values of these types:
+
+\begin{description}
+\item[INT\emph{N}\_MAX] Maximum positive number of the signed integer of bits \emph{N}.
+\item[INT\emph{N}\_MIN] Minimum negative number of signed integer of bits \emph{N}.
+\item[UINT\emph{N}\_MAX] Maximum positive number of unsigned integer of bits \emph{N}. Since it's unsigned the minimum is 0 and can't have a negative value.
+\end{description}
+
+There are also macros in \file{stdint.h} for sizes of the \ident{size\_t} type, integers large enough to hole pointers,
+and other handy size defining macros.  Compilers have to at least have these, and then they can allow
+other larger types.
+
+Here is a full list should be in \file{stdint.h}:
+
+\begin{description}
+\item[int\_least\emph{N}\_t] holds at least \emph{N} bits.
+\item[uint\_least\emph{N}\_t] holds at least \emph{N} bits unsigned.
+\item[INT\_LEAST\emph{N}\_MAX] max value of the matching least\emph{N} type.
+\item[INT\_LEAST\emph{N}\_MIN] min value of the matching least\emph{N} type.
+\item[UINT\_LEAST\emph{N}\_MAX] unsigned maximum of the matching \emph{N} type.
+\item[int\_fast\emph{N}\_t] similar to \ident{int\_least\emph{N}\_t} but asking for the "fastest" with at least that precision.
+\item[uint\_fast\emph{N}\_t] unsigned fastest least integer.
+\item[INT\_FAST\emph{N}\_MAX] max value of the matching fastest\emph{N} type.
+\item[INT\_FAST\emph{N}\_MIN] min value of the matching fastest\emph{N} type.
+\item[UINT\_FAST\emph{N}\_MAX] unsigned max value of the matching fastest\emph{N} type.
+\item[intptr\_t] a \emph{signed} integer large enough to hold a pointer.
+\item[uintptr\_t] an \emph{unsigned} integer large enough to hold a pointer.
+\item[INTPTR\_MAX] max value of a \ident{intptr\_t}.
+\item[INTPTR\_MIN] min value of a \ident{intptr\_t}.
+\item[UINTPTR\_MAX] unsigned max value of a \ident{uintptr\_t}.
+\item[intmax\_t] biggest number possible on that system.
+\item[uintmax\_t] biggest unsigned number possible.
+\item[INTMAX\_MAX] largest value for the biggest signed number.
+\item[INTMAX\_MIN] smallest value for the biggest signed number.
+\item[UINTMAX\_MAX] largest value for the biggest unsigned number.
+\item[PTRDIFF\_MIN] minimum value of \ident{ptrdiff\_t}.
+\item[PTRDIFF\_MAX] maximum value of \ident{ptrdiff\_t}.
+\item[SIZE\_MAX] maximum of a \ident{size\_t}.
 \end{description}
 
 \section{Available Operators}
@@ -137,16 +170,16 @@ operation.
 
 \begin{description}
 \item[()] Function call.
-\item[* (binary)]
-\item[+ (binary)]
-\item[+ (unary)]
-\item[++ (postfix)]
-\item[++ (prefix)]
-\item[- - (postfix)]
-\item[- - (prefix)]
-\item[- (binary)]
-\item[- (unary)]
-\item[/]
+\item[* (binary)] multiply.
+\item[/] divide.
+\item[+ (binary)] addition.
+\item[+ (unary)] positive number.
+\item[++ (postfix)] increment, then read.
+\item[++ (prefix)] read, then increment.
+\item[-- (postfix)] increment, then read.
+\item[-- (prefix)] read, then increment.
+\item[- (binary)] subtract.
+\item[- (unary)] negative number.
 \end{description}
 
 \subsection{Data Operators}
@@ -154,10 +187,10 @@ operation.
 These are used to access data in different ways and forms.
 
 \begin{description}
-\item[-\textgreater{}]
-\item[.]
+\item[-\textgreater{}] struct pointer access.
+\item[.] struct value access.
 \item{[]} Array index.
-\item[sizeof]
+\item[sizeof] size of a type or variable.
 \item[\& (unary)] Address of.
 \item[* (unary)] Value of.
 \end{description}
@@ -167,12 +200,12 @@ These are used to access data in different ways and forms.
 These handle testing equality and inequality of variables.
 
 \begin{description}
-\item[!=]
-\item[\textless{}]
-\item[\textless{}=]
-\item[==]
-\item[\textgreater{}]
-\item[\textgreater{}=]
+\item[!=] does not equal.
+\item[\textless{}] less than.
+\item[\textless{}=] less than or equal.
+\item[==] equal (not assignment).
+\item[\textgreater{}] greater than.
+\item[\textgreater{}=] greater than or equal.
 \end{description}
 
 \subsection{Bit Operators}
@@ -184,22 +217,21 @@ raw bits in integers.
 \item[\& (binary)] Bitwise and.
 \item[\textless{}\textless{}] Shift left.
 \item[\textgreater{}\textgreater{}] Shift right.
-\item[\^{}]
-\item[$\vert$]
-\item[\textasciitilde{}]
+\item[\^{}] bitwise xor (exclusive or).
+\item[$\vert$] bitwise or.
+\item[\textasciitilde{}] compliment (flips all the bits).
 \end{description}
 
 
 \subsection{Boolean Operators}
 
-Used in truth testing.  Study the ternary
-operator carefully, it is very handy.
+Used in truth testing.  Study the ternary operator carefully, it is very handy.
 
 \begin{description}
-\item[!]
-\item[\&\&]
+\item[!] not.
+\item[\&\&] and.
+\item[$\vert\vert$] or.
 \item[?:] Ternary truth test, read \verb|X ? Y : Z| as "if X then Y else Z".
-\item[$\vert\vert$]
 \end{description}
 
 \subsection{Assignment Operators}
@@ -209,17 +241,17 @@ an operation at the same time.  Most of the above operations
 can also be combined into a compound assignment operator.
 
 \begin{description}
-\item[=]
-\item[\%=]
-\item[\&=]
-\item[*=]
-\item[+=]
-\item[-=]
-\item[/=]
-\item[\textless{}\textless{}=]
-\item[\textgreater{}\textgreater{}=]
-\item[\^{}=]
-\item[$\vert$=]
+\item[=] assign.
+\item[\%=] modulus assign.
+\item[\&=] bitwise and assign.
+\item[*=] multiply assign.
+\item[+=] plus assign.
+\item[-=] minus assign.
+\item[/=] divid assign.
+\item[\textless{}\textless{}=] shift left, assign.
+\item[\textgreater{}\textgreater{}=] shift right, assign.
+\item[\^{}=] bitwise xor, assign.
+\item[$\vert$=] bitwise or, assign.
 \end{description}
 
 \section{Available Control Structures}
@@ -240,11 +272,13 @@ There's a few control structures you haven't encountered yet:
 \subsection{Extra Credit}
 
 \begin{enumerate}
-\item Go through each item that I haven't explicitly defined and find out what 
-    its value is by either writing a program t print it out, or finding documentation
-    online telling you this.
+\item Read \file{stdint.h} or a description of it and write out all the possible
+    available size identifiers.
+\item Go through each item here and write out what it does in code.  Research it so you
+     know you got it right by looking it up online.
 \item Get this information solid as well by making flash cards and spending 15 
     minutes a day memorizing it.
 \item Create a program that prints out examples of each type and confirm that your
     research is right.
 \end{enumerate}
+
