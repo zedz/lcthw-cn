@@ -1,19 +1,42 @@
-\chapter{Exercise 26: The C Pre-Processor}
+\chapter{Exercise 26: Write A First Real Program}
 
-The final exercise in part 1 is an introduction to the "cpp" or C Pre-Processor.
-It's usually spelled "c preprocessor" now, but without the hyphen you wouldn't
-understand why it's call "cpp".  You'll learn what cpp does, and why it's 
-typically used wrong.  We'll then cover some handy macros you'll end up
-needing in part 2.
+You are at the half-way mark in the book, so you need to take a 
+mid-term.  In this mid-term you're going to recreate a piece
+of software I wrote specifically for this book called \program{devpkg}.
+You'll then extend it in a few key ways and improve the code, most
+importantly by writing some unit tests for it.
 
+\section{What Is \program{devpkg}?}
 
-\section{What You Should See}
+\program{Devpkg} is a simple C program that installs other software.  I
+made it specifically for this book as a way to teach you how a real 
+software project is structured, and also how to reuse other people's
+libraries.  It uses a portability library called \href{http://apr.apache.org/}{The
+Apache Portable Runtime (APR)} that has many handy C functions which
+work on tons of platforms, including Windows.
 
+\begin{aside}{Do Not Cheat}
+The source code to \program{devpkg} is already online in a repository
+I created, so you could be a loser and just check it out.  I put it up
+because it is actually useful for you to go check your work against
+mine and see what mistakes you've made.  \emph{However}, resist the
+urge to do this until you are truly really stuck.
+\end{aside}
 
-\section{How To Break It}
+\subsection{What We Want To Make}
 
+We want a tool that has three commands:
 
-\section{Extra Credit}
+\begin{enumerate}
+\item[devpkg -S] Sets up a new install on a computer.
+\item[devpkg -I] Installs a piece of software from a URL.
+\item[devpkg -L] Lists all the software that's been installed.
+\end{enumerate}
 
+We want \program{devpkg} to be able to take almost any URL, figure
+out what kind of project it is, download it, install it, and register
+that it downloaded that software.  We'd also like it to process a
+simple dependency list so it can install all the software that a
+project might need as well.
 
-
+More to come...
