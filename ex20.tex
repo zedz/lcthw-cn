@@ -138,16 +138,6 @@ Pay attention to how \func{check} is used, and how when it is
 The way to read those lines is, "check that A is true and if not say M
 and jump out."
 
-
-\section{How The C Pre-Processor Works}
-
-It's now time for you to get a small introduction to the CPP so that you
-know how these macros actually work.  To do this, I'm going to break down
-the most complex macro from \file{dbg.h} and have you run \program{cpp} so
-you can see what it's actually doing.
-
-More to come...
-
 \section{What You Should See}
 
 When you run this, give it some bogus first parameter and you should see
@@ -163,6 +153,117 @@ See how it reports the exact line number where the \func{check} failed?
 That's going to save you hours of debugging later.  See also how it 
 prints the error message for you when \ident{errno} is set? Again,
 that will save you hours of debugging.
+
+\section{How The C Pre-Processor Works}
+
+It's now time for you to get a small introduction to the CPP so that you
+know how these macros actually work.  To do this, I'm going to break down
+the most complex macro from \file{dbg.h} and have you run \program{cpp} so
+you can see what it's actually doing.
+
+Imagine I have a function called \func{dosomething()} that return the typical
+0 for success and -1 for an error.  Every time I call \func{dosomething} I have
+to check for this error code, so I'd write code like this:
+
+\begin{Verbatim}
+int rc = dosomething();
+if(rc != 0) {
+    fprintf(stderr, "There was an error: %s\n", strerror());
+    goto error;
+}
+\end{Verbatim}
+
+What I want to use the CPP for is to encapsulate this \ident{if-statement} I have
+to use all the time into a more readable and memorable line of code.  I want
+what you've been doing in \file{dbg.h} with the \func{check} macro:
+
+\begin{Verbatim}
+int rc = dosomething();
+check(rc == 0, "There was an error.");
+\end{Verbatim}
+
+This is \emph{much} clearer and explains exactly what's going on: check that the 
+function worked, and if not report an error.  To do this, we need some special
+CPP "tricks" that make the CPP useful as a code generation tool.  Take a look
+at the \func{check} and \func{log\_err} macros again:
+
+\begin{Verbatim}
+#define log_err(M, ...) fprintf(stderr, "[ERROR] (%s:%d: errno: %s) " M "\n", __FILE__, __LINE__, clean_errno(), ##__VA_ARGS__)
+#define check(A, M, ...) if(!(A)) { log_err(M, ##__VA_ARGS__); errno=0; goto error; }
+\end{Verbatim}
+
+The first macro, \func{log\_err} is simpler and simply replace itself with a
+call to \func{fprintf} to \ident{stderr}.  The only tricky part of this macro
+is the use of \verb|...| in the definition \verb|log_err(M, ...)|.  What this
+does is let you pass variable arguments to the macro, so you can pass in the
+arguments that should go to \func{fprintf}.  How do they get injected into the
+\func{fprintf} call?  Look at the end to the \verb|##__VA_ARGS__| and
+that's telling the CPP to take the args entered where the \verb|...| is, and
+inject them at that part of the \func{fprintf} call.  You can then do things
+like this:
+
+\verb|log_err("Age: %d, name: %s", age, name);|
+
+The arguments \verb|age, name| are the \verb|...| part of the definition, and those
+get injected into the fprintf output to become:
+
+\begin{Verbatim}
+fprintf(stderr, "[ERROR] (%s:%d: errno: %s) Age %d: name %d\n",
+    __FILE__, __LINE__, clean_errno(), age, name);
+\end{Verbatim}
+
+See the \verb|age, name| at the end, that's how \verb|...| and \verb|##__VA_ARGS__|
+work together, and it will work in macros that call other variable macros.  Look at
+the \func{check} macro now and see it calls \func{log\_err}, but \func{check} is
+\emph{also} using the \verb|...| and \verb|##__VA_ARGS__| to do the call.  That's
+how you can pass full \func{printf} style format strings to \func{check}, which 
+go to \func{log\_err}, and then make both work like \func{printf}.
+
+Next thing to study is how \func{check} crafts the \ident{if-statement} for the
+error checking.  If we strip out the \func{log\_err} usage we see this:
+
+\verb|if(!(A)) { errno=0; goto error; }|
+
+Which means, if \ident{A} is false, then clear errno and goto the error label.
+That has \func{check} macro being replaced with the \ident{if-statment} so if
+we manually expanded out the macro \verb|check(rc == 0, "There was an error.")|
+we'd get:
+
+\begin{Verbatim}
+if(!(rc == 0) {
+    log_err("There was an error.");
+    errno=0;
+    goto error;
+}
+\end{Verbatim}
+
+What you should be getting from this trip through these two macros is that
+the CPP replaces macros with the expanded version of their definition, but
+that it will do this \emph{recursively}, expanding all the macros in macros.
+The CPP then is just a recursive templating system, as I mentioned before.
+Its power comes from its ability to generate whole blocks of parameterized
+code thus becoming a handy code generation tool.
+
+That leaves one question:  Why not just use a function like \func{die}?
+The reason is you want file:line numbers and the \ident{goto} operation
+for an error handling exit.  If you did this inside a function, you wouldn't
+get a line number for where the error actually happened, and the goto would
+be much more complicated.
+
+Another reason is you still have to write the raw \ident{if-statement}, which
+looks like all the other \ident{if-statements} in your code, so it's not as
+clear that this one is an error check.  By wrapping the \ident{if-statement}
+in a macro called \ident{check} you make it clear that this is just error
+checking, and not part of the main flow.
+
+Finally, CPP has the ability to \emph{conditionally compile} portions
+of code, so you can have code that's only present when you build a developer
+or debug version of the program.  You can see this already in the 
+\file{dbg.h} file where the \func{debug} macro has a body only if 
+it's asked for by the compiler.  Without this ability, you'd need a 
+wasted \ident{if-statement} that checks for "debug mode", and then still
+wastes CPU doing that check for no value.
+
 
 \section{Extra Credit}
 
