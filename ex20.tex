@@ -165,33 +165,32 @@ Imagine I have a function called \func{dosomething()} that return the typical
 0 for success and -1 for an error.  Every time I call \func{dosomething} I have
 to check for this error code, so I'd write code like this:
 
-\begin{Verbatim}
+\begin{lstlisting}
 int rc = dosomething();
 if(rc != 0) {
     fprintf(stderr, "There was an error: %s\n", strerror());
     goto error;
 }
-\end{Verbatim}
+\end{lstlisting}
 
 What I want to use the CPP for is to encapsulate this \ident{if-statement} I have
 to use all the time into a more readable and memorable line of code.  I want
 what you've been doing in \file{dbg.h} with the \func{check} macro:
 
-\begin{Verbatim}
+\begin{lstlisting}
 int rc = dosomething();
 check(rc == 0, "There was an error.");
-\end{Verbatim}
+\end{lstlisting}
 
 This is \emph{much} clearer and explains exactly what's going on: check that the 
 function worked, and if not report an error.  To do this, we need some special
 CPP "tricks" that make the CPP useful as a code generation tool.  Take a look
 at the \func{check} and \func{log\_err} macros again:
 
-\begin{Verbatim}
-#define log_err(M, ...) fprintf(stderr, "[ERROR] (%s:%d: errno: %s) " M "\n",
-    __FILE__, __LINE__, clean_errno(), ##__VA_ARGS__)
+\begin{lstlisting}
+#define log_err(M, ...) fprintf(stderr, "[ERROR] (%s:%d: errno: %s) " M "\n", __FILE__, __LINE__, clean_errno(), ##__VA_ARGS__)
 #define check(A, M, ...) if(!(A)) { log_err(M, ##__VA_ARGS__); errno=0; goto error; }
-\end{Verbatim}
+\end{lstlisting}
 
 The first macro, \func{log\_err} is simpler and simply replace itself with a
 call to \func{fprintf} to \ident{stderr}.  The only tricky part of this macro
@@ -208,10 +207,10 @@ like this:
 The arguments \verb|age, name| are the \verb|...| part of the definition, and those
 get injected into the fprintf output to become:
 
-\begin{Verbatim}
+\begin{lstlisting}
 fprintf(stderr, "[ERROR] (%s:%d: errno: %s) Age %d: name %d\n",
     __FILE__, __LINE__, clean_errno(), age, name);
-\end{Verbatim}
+\end{lstlisting}
 
 See the \verb|age, name| at the end? That's how \verb|...| and
 \verb|##__VA_ARGS__| work together, and it will work in macros that call other
@@ -231,13 +230,13 @@ That has \func{check} macro being replaced with the \ident{if-statment} so if
 we manually expanded out the macro \verb|check(rc == 0, "There was an error.")|
 we'd get:
 
-\begin{Verbatim}
+\begin{lstlisting}
 if(!(rc == 0) {
     log_err("There was an error.");
     errno=0;
     goto error;
 }
-\end{Verbatim}
+\end{lstlisting}
 
 What you should be getting from this trip through these two macros is that
 the CPP replaces macros with the expanded version of their definition, but
