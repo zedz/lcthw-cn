@@ -20,7 +20,7 @@ The source code to \program{devpkg} is already online in a repository
 I created, so you could be a loser and just check it out.  I put it up
 because it is actually useful for you to go check your work against
 mine and see what mistakes you've made.  \emph{However}, resist the
-urge to do this until you are truly really stuck.
+urge to do this until you are truly stuck.
 \end{aside}
 
 \subsection{What We Want To Make}
@@ -39,30 +39,74 @@ that it downloaded that software.  We'd also like it to process a
 simple dependency list so it can install all the software that a
 project might need as well.
 
-More to come...
-
 \subsection{The Design}
 
-Explain how we want to design \program{devpkg}
+To accomplish this goal \program{devpkg} will have a very simple design:
+
+\begin{description}
+\item[Use external commands] You'll do most of the work through external
+    commands like \program{curl}, \program{git}, and \program{tar}.  This
+    reduces the amount of code \prgram{devpkg} needs to get things done.
+\item[Simple File Database] You could easily make it more complex, but to
+    start you'll just make a single simple file database at
+    \file{/usr/local/.devpkg/db} to keep track of what's installed.
+\item[/usr/local Always] Again you could make this more advanced, but for
+    starters just assume it's always \file{/usr/local} which is a standard
+    install path for most software on Unix.
+\item[configure, make, make install] It's assumed that most software can
+    install with just a \program{configure; make; make install} and maybe
+    \program{configure} is optional.  If the software can't at a minimum
+    do that, then there's some options ot modify the commands, but otherwise
+    \program{devpkg} won't bother.
+\item[The User Can Be root] We'll assume the user can become root using
+    sudo, but that they don't want to become root until the end.
+\end{description}
+
+This will keep our program small at first and work well enough to get it
+going, at which point you'll be able to modify it further for this exercise.
 
 
 \subsection{The Apache Portable Runtime}
 
-Introduce APR and why we're using it, but leave how to use it for the actual exercise.
+One more thing you'll do is leverage the \href{http://apr.apache.org/}{The
+Apache Portable Runtime (APR)} libraries to get a good set of portable routines
+for doing this kind of work.  The APR isn't necessary, and you could probably
+write this program without them, but it'd take more code than necessary.
+I'm also forcing you to use APR now so you get used to linking and using
+other libraries.  Finally, the APR also works on \emph{Windows} so your
+skills with it are transferable to many other platforms.
+
+You should go get both the \library{apr-1.4.5} and the \library{apr-util-1.3}
+libraries, as well as browse through the documentation available at the 
+\href{http://apr.apache.org/}{main APR site at apr.apache.org}.
+
+Here's a shell script that will install all the stuff you need.  You
+should write this into a file by hand, and then run it until it can
+install APR without any errors.
+
+\begin{code}{APR Install Script}
+<< d['code/ex26.1.sh|sh|l'] >>
+\end{code}
+
+I'm having you write this script out because this is basically what
+we want \program{devpkg} to do, but with extra options and checks.
+In fact, you could just do it all in shell with less code, but then
+that wouldn't be a very good program for a C book would it?
+
+Simply run this script and fix it until it works, then you'll have the
+libraries you need to complete the rest of this project.
+
 
 \section{Project Layout}
 
-Have them make the various files and directories to hold \program{devpkg}.
-
-Explain all the pieces.
+Coming soon.
 
 \section{The Source Files}
 
-List and explain all the source files they have to enter to make it.
+Coming soon.
 
 
 \section{The Mid-Term Exam}
 
-Give the list of things they have to change in the above source files
-to complete this section.
+Coming soon.
 
