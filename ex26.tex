@@ -6,6 +6,15 @@ of software I wrote specifically for this book called \program{devpkg}.
 You'll then extend it in a few key ways and improve the code, most
 importantly by writing some unit tests for it.
 
+\begin{aside}{WARNING: Beta Draft Content}
+I wrote this exercise before writing some of the exercises you might
+need to complete this.  If you are attempting this one now, please
+keep in mind that the software may have bugs, that you might have
+problems because of my mistakes, and that you might not know everything
+you need to finish it.  If so, tell me at help@learncodethehardway.org
+and then wait until I finish the other exercises.
+\end{aside}
+
 \section{What Is \program{devpkg}?}
 
 \program{Devpkg} is a simple C program that installs other software.  I
@@ -14,6 +23,10 @@ software project is structured, and also how to reuse other people's
 libraries.  It uses a portability library called \href{http://apr.apache.org/}{The
 Apache Portable Runtime (APR)} that has many handy C functions which
 work on tons of platforms, including Windows.
+
+Your goal in this exercise is to build \program{devpkg} from source, 
+finish each \emph{Challenge} I give, and use the source to understand
+what \program{devpkg} does and why.
 
 \begin{aside}{Do Not Cheat}
 The source code to \program{devpkg} is already online in a repository
@@ -31,6 +44,8 @@ We want a tool that has three commands:
 \item[devpkg -S] Sets up a new install on a computer.
 \item[devpkg -I] Installs a piece of software from a URL.
 \item[devpkg -L] Lists all the software that's been installed.
+\item[devpkg -F] Fetches some source code for manual building.
+\item[devpkg -B] Builds fetches source code and installs it, even if already installed.
 \end{enumerate}
 
 We want \program{devpkg} to be able to take almost any URL, figure
@@ -99,14 +114,296 @@ libraries you need to complete the rest of this project.
 
 \section{Project Layout}
 
-Coming soon.
+You need to setup some simple project files to get started.  Here's how I
+usually craft a new project:
+
+\begin{code}{Project Skeleton Directory}
+<< d['code/ex26.2.sh|pyg|l'] >>
+\end{code}
+
+\subsection{Other Dependencies}
+
+You should have already installed APR and APR-util, so now you need 
+a few more files as basic dependencies:
+
+\begin{enumerate}
+\item \file{dbg.h} from Exercise 20.
+\item \file{bstrlib.h} and \file{bstrlib.c} from \href{http://bstring.sourceforge.net/}. Download the .zip file, extract it, and copy just those two files out.
+\item Type \verb|make bstrlib.o| and if it doesn't work, read the "Fixing bstring" 
+    instructions below.
+\end{enumerate}
+
+\begin{aside}{Fixing bstring}
+In some platforms the bstring.c file will have an error like:
+
+\verb|bstrlib.c:2762: error: expected declaration specifiers or '...' before numeric constant|
+
+This is from a bad define the authors added which doesn't work always.  Just
+delete this \verb|#ifdef| then recompile and it should work.
+\end{aside}
+
+When that's all done, you should have a \file{Makefile}, \file{README},
+\file{dbg.h}, \file{bstrlib.h}, and \file{bstrlib.c} ready to go.
+
+\section{The Makefile}
+
+A good place to start is the \file{Makefile} since this lays out 
+how things are built and what source files you'll be creating.
+
+
+There's nothing in this that you haven't seen before, except maybe the strange
+\verb|?=| syntax, which says "set PREFEX equal to this unless PREFIS is already
+set".
 
 \section{The Source Files}
 
-Coming soon.
+From the make file, we see that there's four dependencies for \program{devpkg}
+which are:
 
+\begin{description}
+\item[bstrlib.o] Comes from \file{bstlib.c} and header file \file{bstlib.h} which
+    you already have.
+\item[db.o] From \file{db.c} and header file \file{db.c}, and it
+    will contain code for our little "database" routines.
+\item[shell.o] From \file{shell.c} and header \file{shell.h}, with a couple
+    functions that make running other commands like \program{curl} easier.
+\item[commands.o] From \file{command.c} and header \file{command.h}, and
+    contains all the commands that \program{devpkg} needs to be useful.
+\item[devpkg] It's not explicitly mentioned, but instead is the target
+    (on the left) in this part of the \file{Makefile}. It comes from
+    \file{devpkg.c} which contains the \func{main} method for the whole
+    program.
+\end{description}
+
+Your job is to now create each of these files and type in their code
+and get them correct.
+
+\begin{aside}{Don't Be Fooled By The Magic Show}
+You may read this description and think, "Man! How is it that Zed is
+so smart he just sat down and typed these files out like this!? I
+could never do that."  I didn't magically craft \program{devpkg} 
+in this form with my awesome code powers.  Instead, what I did is this:
+
+\begin{enumerate}
+\item I wrote a quick little README to get an idea of how I wanted it
+    to work.
+\item I created a simple bash script (like the one you did) to figure
+    out all the pieces that you need.
+\item I made one .c file and hacked on it for a few days working through
+    the idea and figuring it out.
+\item I got it mostly working and debugged, \emph{then} I started
+    breaking up the one big file into these four files.
+\item After getting these files laid down, I renamed and refined the
+    functions and data structures so they'd be more logical and "pretty".
+\item Finally, after I had it working the \emph{exact same} but with
+    the new structure, I added a few features like the \program{-F} and
+    \program{-B} options.
+\end{enumerate}
+
+You're reading this in the order I want to teach it to you, but don't think
+this is how I always build software.  Sometimes I do know a lot about the
+subject I and I use more planning.  Sometimes I just hack up an idea and
+see how well it'd work.  Sometimes I write one, then throw it away and
+plan out a better one.  It all depends on what my experience tells me is
+best, or where my inspiration takes me.
+
+If you run into an "expert" who tries to tell you there's only one
+way to solve a programming problem, then they're lying to you.  Either
+they actually use multiple tactics, or they're not very good.
+\end{aside}
+
+\subsection{The DB Functions}
+
+There must be a way to record URLs that have been installed, list these
+URLs, and check if something has already been installed so we can
+skip it.  I'll use a simple flat file database and the \file{bstrlib.h}
+library to do it.
+
+First, create the \file{db.h} header file so you know what you'll be
+implementing.
+
+\begin{code}{db.h}
+<< d['code/ex26/db.h|pyg|l'] >>
+\end{code}
+
+Then implement those functions in \file{db.c}, as you build this, use
+\program{make} like you've been to get it to compile cleanly.
+
+\begin{code}{db.c}
+<< d['code/ex26/db.c|pyg|l'] >>
+\end{code}
+
+\subsubsection{Challenge 1: Code Review}
+
+Before continuing, read every line of these files carefully and 
+confirm that you have them entered in \emph{exactly}.  Read them
+line-by-line backwards to practice that. Also trace each function 
+call and make sure you are using \func{check} to validate the
+return codes.  Finally, look up \emph{every} function that you
+don't recognize either on the APR web site documentation, or
+in the \file{bstrlib.h} and \file{bstrlib.c} source.
+
+
+\subsection{The Shell Functions}
+
+A key design decision for \program{devpkg} is to do most of the work
+using external tools like \program{curl}, \program{tar}, and \program{git}.
+We could find libraries to do all of this internally, but it's pointless
+if we just need the base features of these programs.  There is no shame
+in running another command in Unix.
+
+To do this I'm going to use the \file{apr\_thread\_proc.h} functions
+to run programs, but I also want to make a simple kind of "template"
+system.  I'll use a \ident{struct Shell} that holds all the information
+needed to run a program, but has "holes" in the arguments list where I
+can replace them with values.
+
+Look at the \file{shell.h} file to see the structure and the commands I'll use.
+You can see I'm using \ident{extern} to indicate that other \file{.c} files
+can access variables I'm defining in \file{shell.c}.
+
+\begin{code}{shell.h}
+<< d['code/ex26/shell.h|pyg|l'] >>
+\end{code}
+
+Make sure you've created \file{shell.h} exactly, and that you've got the
+same names and number of \ident{extern Shell} variables.  Those are used
+by the \func{Shell\_run} and \func{Shell\_exec} functions to run commands.
+I define these two functions, and create the real variables in \file{shell.c}.
+
+\begin{code}{shell.c}
+<< d['code/ex26/shell.c|pyg|l'] >>
+\end{code}
+
+Read the \file{shell.c} from the bottom to the top (which is a common C source
+layout) and you see I've created the actual \ident{Shell} variables that you
+indicated were \ident{extern} in \file{shell.h}.  They live here, but are 
+available to the rest of the program.  This is how you make global variables
+that live in one \file{.o} file but are used everywhere.  You shouldn't make
+many of these, but they are handy for things like this.
+
+Continuing up the file we get to the \func{Shell\_run} function, which is
+a "base" function that just runs a command based on what's in a \ident{Shell}
+struct.  It uses many of the functions defined in \file{apr\_thread\_proc.h}
+so go look up each one to see how it works.  This seems like a lot of work
+compared to just using the \func{system} function call, but this also gives
+you more control over the other program's execution.  For example, in our
+\ident{Shell} struct we have a \ident{.dir} attribute which forces the program
+to be in a specific directory before running.
+
+Finally, I have the \func{Shell\_exec} function, which is a "variable arguments"
+function.  You've seen this before, but make sure you grasp the \file{stdarg.h}
+functions and how to write one of these.  In the challenge for this section
+you are going to analyze this function.
+
+\subsubsection{Challenge 2: Analyze Shell\_exec}
+
+Challenge for these files (in addition to a full code review just like you
+did in Challenge 1) is to fully analyze \func{Shell\_exec} and break down
+exactly how it works.  You should be able to understand each line, how
+the two \ident{for-loops} work, and how arguments are being replaced.
+
+Once you have it analyzed, add a field to \ident{struct Shell} that gives
+the number of variable \ident{args} that must be replaced.  Update all the
+commands to have the right count of args, and then have an error check that
+confirms these args have been replaced and error exit.
+
+\subsection{The Command Functions}
+
+Now you get to make the actual commands that do the work.  These commands
+will use functions from APR, \file{db.h} and \file{shell.h} to do the 
+real work of downloading and building software you want it to build.
+This is the most complex set of files, so do them carefully.  As before, you
+start by making the \file{commands.h} file, then implementing its functions
+in the \file{commands.c} file.
+
+\begin{code}{commands.h}
+<< d['code/ex26/commands.h|pyg|l'] >>
+\end{code}
+
+There's not much in \file{commands.h} that you haven't seen already.  You
+should see that there's some defines for strings that are used everywhere.
+The real interesting code is in \file{commands.c}.
+
+\begin{code}{commands.c}
+<< d['code/ex26/commands.c|pyg|l'] >>
+\end{code}
+
+After you have this entered in and compiling, you can analyze it.  If you've
+don the challenges until now, you should see how the \file{shell.c} functions
+are being used to run shells and how the arguments are being replaced.  If
+not then go back and make sure you \emph{truly} understand how \func{Shell\_exec}
+actually works.
+
+\subsubsection{Challenge 3: Critique My Design}
+
+As before, do a complete review of this code and make sure it's exactly
+the same.  Then go through each function and make sure you know how it 
+works and what it's doing.  You also should trace how each function calls
+the other functions you've written in this file and other files.  Finally,
+confirm that you understand all the functions you're calling from APR here.
+
+Once you have the file correct and analyzed, go back through and assume
+I'm an idiot.  Then, criticize the design I have to see how you can improve
+it if you can.  Don't \emph{actually} change the code, just create a little
+\file{notes.txt} file and write down your thoughts and what you might change.
+
+
+\subsection{The \file{devpkg} Main Function}
+
+The last and most important file, but probably the simplest, is \file{devpkg.c}
+where the \func{main} function lives.  There's no \file{.h} file for this, since
+this one includes all the others.  Instead this just creates the executable
+\program{devpkg} when combined with the other \file{.o} files from our 
+\file{Makefile}.  Enter in the code for this file, and make sure it's 
+correct.
+
+\begin{code}{devpkg.c}
+<< d['code/ex26/devpkg.c|pyg|l'] >>
+\end{code}
+
+\subsubsection{Challenge 4: The README And Test Files}
+
+The challenge for this file is to understand how the arguments are
+being processed, what the arguments are, and then create the \file{README}
+file with instructions on how to use it.  As you write the README, also
+write a simple \file{test.sh} that runs \program{./devpkg} to check that
+each command is actually working against real live code.  Use the \verb|set -e|
+at the top of your script so that it aborts on the first error.
+
+Finally, run the program under valgrind and make sure it's all working
+before moving on to the mid-term exam.
 
 \section{The Mid-Term Exam}
 
-Coming soon.
+Your final challenge is the mid-term exam and it involves three things:
+
+\begin{enumerate}
+\item Compare your code to my code available online and starting with 100\%, 
+    remove 1\% for each line you got wrong.
+\item Take your notes.txt on how you would improve the code and functionality
+    of \program{devpkg} and implement your improvements.
+\item Write an alternative version of \program{devpkg} using your other 
+    favorite language or the one you think can do this the best.  Compare
+    the two, then improve your \emph{C} version of \program{devpkg} based on what
+    you've learned.
+\end{enumerate}
+
+To compare your code with mine, do the following:
+
+\begin{lstlisting}
+cd ..  # get one directory above your current one
+git clone git://gitorious.org/devpkg/devpkg.git devpkgzed
+diff -r devpkg devpkgzed
+\end{lstlisting}
+
+This will clone my version of \program{devpkg} into a directory
+\program{devpkgzed} and then use the tool \program{diff} to compare
+what you've done to what I did.  The files you're working with in
+this book come directly from this project, so if you get different
+lines then that's an error.
+
+Keep in mind that there's no real pass or fail on this exercise, just
+a way for you to challenge yourself to be as exact and meticulous as
+possible.
 
