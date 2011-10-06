@@ -131,7 +131,9 @@ a few more files as basic dependencies:
 \begin{aside}{Fixing bstring}
 In some platforms the bstring.c file will have an error like:
 
-\verb|bstrlib.c:2762: error: expected declaration specifiers or '...' before numeric constant|
+\begin{lstlisting}
+bstrlib.c:2762: error: expected declaration specifiers or '...' before numeric constant
+\end{lstlisting}
 
 This is from a bad define the authors added which doesn't work always.  Just
 delete this \verb|#ifdef| then recompile and it should work.
