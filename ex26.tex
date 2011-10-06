@@ -160,7 +160,7 @@ which are:
 \begin{description}
 \item[bstrlib.o] Comes from \file{bstlib.c} and header file \file{bstlib.h} which
     you already have.
-\item[db.o] From \file{db.c} and header file \file{db.c}, and it
+\item[db.o] From \file{db.c} and header file \file{db.h}, and it
     will contain code for our little "database" routines.
 \item[shell.o] From \file{shell.c} and header \file{shell.h}, with a couple
     functions that make running other commands like \program{curl} easier.
@@ -168,7 +168,7 @@ which are:
     contains all the commands that \program{devpkg} needs to be useful.
 \item[devpkg] It's not explicitly mentioned, but instead is the target
     (on the left) in this part of the \file{Makefile}. It comes from
-    \file{devpkg.c} which contains the \func{main} method for the whole
+    \file{devpkg.c} which contains the \func{main} function for the whole
     program.
 \end{description}
 

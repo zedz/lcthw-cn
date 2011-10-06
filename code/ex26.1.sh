@@ -36,5 +36,5 @@ sudo make install
 
 #cleanup
 cd /tmp
-rm -rf apr-util-1.3.12 apr-util-1.3.12
+rm -rf apr-util-1.3.12* apr-1.4.5*
 
