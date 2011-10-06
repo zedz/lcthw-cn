@@ -17,24 +17,19 @@ and then wait until I finish the other exercises.
 
 \section{What Is \program{devpkg}?}
 
-\program{Devpkg} is a simple C program that installs other software.  I
-made it specifically for this book as a way to teach you how a real 
-software project is structured, and also how to reuse other people's
-libraries.  It uses a portability library called \href{http://apr.apache.org/}{The
-Apache Portable Runtime (APR)} that has many handy C functions which
-work on tons of platforms, including Windows.
+\program{Devpkg} is a simple C program that installs other software.  I made it
+specifically for this book as a way to teach you how a real software project is
+structured, and also how to reuse other people's libraries.  It uses a
+portability library called \href{http://apr.apache.org/}{The Apache Portable
+Runtime (APR)} that has many handy C functions which work on tons of platforms,
+including Windows.  Other than that, it just grabs code from the internet
+(or local files) and does the usual \verb|./configure ; make ; make install|
+every programmer does.
 
 Your goal in this exercise is to build \program{devpkg} from source, 
 finish each \emph{Challenge} I give, and use the source to understand
 what \program{devpkg} does and why.
 
-\begin{aside}{Do Not Cheat}
-The source code to \program{devpkg} is already online in a repository
-I created, so you could be a loser and just check it out.  I put it up
-because it is actually useful for you to go check your work against
-mine and see what mistakes you've made.  \emph{However}, resist the
-urge to do this until you are truly stuck.
-\end{aside}
 
 \subsection{What We Want To Make}
 
