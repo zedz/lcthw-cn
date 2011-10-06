@@ -14,16 +14,80 @@ the language and your computer.  But, you should never use this.  Always
 strive for easy to read straight forward code.
 \end{aside}
 
+
+\begin{code}{db.h}
+<< d['code/ex23.c|pyg|l'] >>
+\end{code}
+
+In this code I have three versions of a copy function:
+
+\begin{description}
+\item[normal\_copy] Which is just a plain \ident{for-loop} that copies
+    characters from one array to another.
+\item[duffs\_device] This is the brain teaser called "Duff's Device", named
+    after Tom Duff, the person to blame for this delicious evil.
+\item[zeds\_device] A version of "Duff's Device" that just uses a goto so
+    you can get a clue about what's happening with the weird \ident{do-while}
+    placement in \func{duffs\_device}.
+\end{description}
+
+Study these three functions before continuing.  Try to explain what's
+going on to yourself.
+
+
 \section{What You Should See}
 
+There's no output from this program, it just runs and exits.  You should
+run it under valgrind and 
 
-\section{How To Break It}
+\section{Solving The Puzzle}
 
+The first thing to understand is that C is rather loose regarding some
+of its syntax.  This is why you can put half of a \ident{do-while} in
+one part of a \ident{switch-statement}, then the other half somewhere
+else and it will still work.  If you look at my version with the \ident{goto again}
+it's actually more clear what's going on, but make sure you understand
+how that part works.
+
+The second thing is how the default fallthrough semantics of
+\ident{switch-statements} means you can jump to a particular case, and
+then it will just keep running until the end of the switch.
+
+The final clue is the \verb|count % 8| and the calculation of \ident{n} at
+the top.
+
+Now, to solve how these functions work, do the following:
+
+\begin{enumerate}
+\item Print this code out so you can write on some paper.
+\item On a piece of paper, write each of the variables in a table as they
+    are when they get initialized right before the \ident{switch-statement}.
+\item Follow the logic to the switch, then do the jump to the right case.
+\item Update the variables, including the \ident{to}, \ident{from}, and the
+    arrays they point at.
+\item When you get to the \ident{while} part or my \ident{goto} alternative,
+    check your variables and then follow the logic either back to the
+    top of the \ident{do-while} or to where the \ident{again} label is 
+    located.
+\item Follow through this manual tracing, updating the variables, until
+    you are sure you see how this flows.
+\end{enumeration}
 
 \section{Extra Credit}
 
 \begin{enumerate}
-\item Rewrite this using \ident{goto}, and then never speak of this again
-    or else.
+\item Never use this again.
+\item Go look at the Wikipedia entry for "Duff's Device" and see if you can
+    spot the error.  Compare it to the version I have here and read the article
+    carefully to try to understand why the Wikipedia code won't work for you
+    but worked for Tom Duff.
+\item Create a set of macros that lets you create any length device like this.
+    For example, what if you wanted to have 32 case statements and didn't want
+    to write out all of them? Can you do a macro that lays down 8 at a time?
+\item Change the \func{main} to conduct some speed tests to see which one is
+    really the fastest.
+\item Read about \func{memcpy}, \func{memmov}, \func{memset}, and also compare
+    their speed.
+\item Never use this again!
 \end{enumerate}
 
