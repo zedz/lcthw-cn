@@ -1,8 +1,11 @@
-\chapter{Exercise 25: Working With Files}
+\chapter{Exercise 25: Variable Argument Functions}
 
-The great thing about C's I/O functions is that they're nearly the same
-whether you're working with the terminal or a file.  This exercise will
-teach you the basics of working with files.
+In C you can create your own versions of functions like \func{printf} by
+creating a "variable argument function".  These functions use the header
+\file{stdarg.h} and with them you can create nicer interfaces to your
+library.  They are handy for certain types of "builder" functions, formatting
+functions, and anything that takes variable arguments.
+
 
 \section{What You Should See}
 
