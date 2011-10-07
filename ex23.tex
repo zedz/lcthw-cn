@@ -6,14 +6,19 @@ the "inventor".  This little slice of awesome (evil?) has nearly everything
 you've been learning wrapped in one tiny little package.  Figuring out
 how it works is also a good fun puzzle.
 
-\begin{aside}{If You Use This You Shall Be Ridiculed}
+\begin{aside}{This Is Only An Exercise}
 Part of the fun of C is that you can come up with crazy hacks like this,
 but this is also what makes C annoying to use.  It's good to learn about
 these tricks because it gives you a deeper understanding of
 the language and your computer.  But, you should never use this.  Always
-strive for easy to read straight forward code.
+strive for easy to read code.
 \end{aside}
 
+Duff's device was "discovered" (created?) by Tom Duff and is a trick
+with the C compiler that actually shouldn't work.  I won't tell you what
+it does yet since this is meant to be a puzzle for you to ponder and
+try to solve.  You are to get this code running and then try to figure
+out what it does, and \emph{why} it does it this way.
 
 \begin{code}{ex23.c}
 << d['code/ex23.c|pyg|l'] >>
@@ -32,7 +37,7 @@ In this code I have three versions of a copy function:
 \end{description}
 
 Study these three functions before continuing.  Try to explain what's
-going on to yourself.
+going on to yourself before continuing.
 
 
 \section{What You Should See}
@@ -73,6 +78,21 @@ Now, to solve how these functions work, do the following:
     you are sure you see how this flows.
 \end{enumerate}
 
+\subsection{Why Bother?}
+
+When you've figured out how it actually works, the final question is: Why would
+you ever want to do this?  The purpose of this trick is to manually do "loop
+unrolling".  Large long loops can be slow, so one way to speed them up is to
+find some fixed chunk of the loop, and then just duplicate the code in the loop
+out that many times sequentially.  For example, if you know a loop runs a
+minimum of 20 times, then you can put the contents of the loop 20 times in the
+source code.
+
+Duff's device is basically doing this automatically by chunking up the loop
+into 8 iteration chunks.  It's clever and actually works, but these days a good
+compiler will do this for you.  You shouldn't need this except in the rare case
+where you have \emph{proven} it would improve your speed.
+
 \section{Extra Credit}
 
 \begin{enumerate}
@@ -86,7 +106,7 @@ Now, to solve how these functions work, do the following:
     to write out all of them? Can you do a macro that lays down 8 at a time?
 \item Change the \func{main} to conduct some speed tests to see which one is
     really the fastest.
-\item Read about \func{memcpy}, \func{memmov}, \func{memset}, and also compare
+\item Read about \func{memcpy}, \func{memmove}, \func{memset}, and also compare
     their speed.
 \item Never use this again!
 \end{enumerate}
