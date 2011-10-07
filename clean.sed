@@ -9,3 +9,6 @@ s/^ *$//g
 r ga.html
 d
 }
+/<div class="crosslinks"><p class="noindent">/{
+r header.html
+}
