@@ -7,15 +7,230 @@ variables.  In this exercise, we'll learn about scope by learning about
 how a stack data structure works, and then feeding that concept back in
 to how modern C does scoping.
 
-We'll also learn the kinds of things to avoid when dealing with the
-scoping rules that C has.
+The real purpose of this exercise though is to learn where the hell things
+live in C.  When someone doesn't grasp the concept of scope, it's almost
+always a failure in understanding where variables are created, exist, and
+die.  Once you know where things are, the concept of scope becomes easier.
 
+This exercise will require three files:
+
+\begin{description}
+\item[ex22.h] A header file that sets up some external variables and some functions.
+\item[ex22.c] Not your main like normal, but instead a source file that will become
+    a object file \file{ex22.o} which will have some functions and variables in it
+    defined from \file{ex22.h}.
+\item[ex22\_main.c] The actual \func{main} that will include the other two and
+    demonstrate what they contain as well as other scope concepts.
+\end{description}
+
+\subsection{ex22.h and ex22.c}
+
+Your first step is to create your own header file named \file{ex22.h} which
+defines the functions and "extern" variables you need:
+
+\begin{code}{ex22.h}
+<< d['code/ex22.h|pyg|l'] >>
+\end{code}
+
+The important thing to see is the use of \verb|extern int THE_SIZE|, which I'll
+explain after you also create the matching \file{ex22.c}:
+
+\begin{code}{ex22.c}
+<< d['code/ex22.c|pyg|l'] >>
+\end{code}
+
+These two files introduce some new kinds of storage for variables:
+
+\begin{description}
+\item[extern] This keyword is a way to tell the compiler "the variable exists,
+    but it's in another 'external' location".  Typically this means that one
+    .c file is going to use a variable that's been defined in another .c file.
+    In this case, we're saying \file{ex22.c} has a variable \ident{THE\_SIZE}
+    that will be accessed from \file{ex22\_main.c}.
+\item[static (file)] This keyword is kind of the inverse of \ident{extern} and says
+    that the variable is only used in this .c file, and should not be available
+    to other parts of the program.  Keep in mind that \ident{static} at the
+    file level (as with \ident{THE\_AGE} here) is different than in other places.
+\item[static (function)] If you declare a variable in a function \ident{static}, then
+    that variable acts like a \ident{static} defined in the file, but it's only
+    accessible from that function. It's a way of creating constant state for a
+    function, but in reality it's \emph{rarely} used in modern C programming
+    because they are hard to use with threads.
+\end{description}
+
+In these two files then, you have the following variables and functions
+that you should understand:
+
+\begin{description}
+\item[THE\_SIZE] This is the variable you declared \ident{extern} that you'll
+    play with from \file{ex22\_main.c}.
+\item[get\_age and set\_age] These are taking the static variable \ident{THE\_AGE},
+    but exposing it to other parts of the program through functions.  You couldn't
+    access \ident{THE\_AGE} directly, but these functions can.
+\item[update\_ratio] This takes a new \ident{ratio} value, and returns the old
+    one.  It uses a function level static variable \ident{ratio} to keep track
+    of what the ratio currently is.
+\item[print\_size] Prints out what \file{ex22.c} thinks \ident{THE\_SIZE} is
+    currently.
+\end{description}
+
+\subsection{ex22\_main.c}
+
+Once you have that file written, you can then make the main function which
+uses all of these and demonstrates some more scope conventions:
+
+\begin{code}{ex22\_main.c}
+<< d['code/ex22_main.c|pyg|l'] >>
+\end{code}
+
+I'll break this file down line-by-line, and as I do you should find each
+variable I mention and where it lives.
+
+\begin{description}
+\item[ex22\_main.c:4] Making a \ident{const} which stands for constant and is an 
+    alternative to using a \ident{define} to create a constant variable.
+\item[ex22\_main.c:6] A simple function that demonstrates more scope issues in a function.
+\item[ex22\_main.c:8] Prints out the value of \ident{count} as it is at the top of the function.
+\item[ex22\_main.c:10] An \ident{if-statement} that starts a new \emph{scope block}, and then
+    has another \ident{count} variable in it.  This version of \ident{count}
+    is actually a whole new variable. It's kind of like the \ident{if-statement}
+    started a new "mini function".
+\item[ex22\_main.c:11] The \ident{count} that is local to this block is actually different
+    from the one in the function's parameter list.  What what happens as we 
+    continue.
+\item[ex22\_main.c:13] Prints it out so you can see it's actually 100 here, not what was
+    passed to \func{scope\_demo}.
+\item[ex22\_main.c:16] Now for the freaky part.  You have \ident{count} in two places: the
+    parameters to this function, and in the \ident{if-statement}.  The
+    \ident{if-statement} created a new block, so the \ident{count} on line
+    11 \emph{does not impact the parameter with the same name}.  This line
+    prints it out and you'll see that it prints the value of the parameter, 
+    not 100.
+\item[ex22\_main.c:18-20] Then I set the parameter \ident{count} to 3000 and print that
+    out, which will demonstrate that you can change function parameters
+    and they don't impact the caller's version of the variable.
+\end{description}
+
+Make sure you trace through this function, but don't think that you understand
+scope quite yet.  Just start to realize that if you make a variable inside a
+block (as in \ident{if-statements} or \ident{while-loops}), then those variables
+are \emph{new} variables that exist only in that block.  This is crucial to 
+understand, and is also a \emph{source of many bugs}.  We'll address why
+you shouldn't do this shortly.
+
+The rest of the \file{ex22\_main.c} then demonstrates all of these by
+manipulating and printing them out:
+
+\begin{description}
+\item[26] Prints out the current values of \ident{MY\_NAME} and gets
+    \ident{THE\_AGE} from \file{ex22.c} using the accessor function
+    \func{get\_age}.
+\item[27-30] Uses \func{set\_age} in \file{ex22.c} to change \ident{THE\_AGE}
+    and then print it out.
+\item[33-39] Then I do the same thing to \ident{THE\_SIZE} from \file{ex22.c},
+    but this time I'm accessing it directly, and also demonstrating that it's
+    actually changing in that file by printing it here and with \func{print\_size}.
+\item[42-44] Show how the static variable \ident{ratio} inside \func{update\_ratio}
+    is maintained between function calls.
+\item[46-51] Finally running \func{scope\_demo} a few times so you can see
+    the scope in action.  Big thing to notice is that the local \ident{count}
+    variable remains unchanged.  You \emph{must} get that passing in a variable
+    like this will not let you change it in the function.  To do that you need
+    our old friend the pointer.  If you were to pass a pointer to this \ident{count},
+    then the called function has the address of it and can change it.
+\end{description}
+
+That explains what's going on in all of these files, but you should trace
+through them and make sure you know where everything is as you study it.
 
 \section{What You Should See}
 
+This time, instead of using your \file{Makefile} I want you to build these
+two files manually so you can see how they are actually put together by
+the compiler.  Here's what you should do and what you should see for output.
+
+\begin{code}{ex22 output}
+\begin{lstlisting}
+<< d['code/ex22.out|dexy'] >>
+\end{lstlisting}
+\end{code}
+
+Make sure you trace how each variable is changing and match it to the line
+that gets output.  I'm using \func{log\_info} from the \file{dbg.h} macros
+so you can get the exact line number where each variable is printed and
+find it in the files for tracing.
+
+\section{Scope, Stack, And Bugs}
+
+If you've done this right you should now see many of the different ways
+you can place variables in your C code.  You can use \ident{extern} or
+access functions like \func{get\_age} to create globals.  You can make
+new variables inside any blocks, and they'll retain their own values until
+that block exits, leaving the outer variables alone.  You also can pass
+a value to a function, and change the parameter but not change the caller's
+version of it.
+
+The most important thing to realize though is that all of this causes
+bugs.  C's ability to place things in many places in your machine and then
+let you access it in those places means you get confused easily about
+where something lives.  If you don't where it lives then there's a chance
+you'll not manage it properly.
+
+With that in mind, here's some rules to follow when writing C code
+so you avoid bugs related to the stack:
+
+\begin{enumerate}
+\item Do not "shadow" a variable like I've done here with \ident{count}
+    in \func{scope\_demo}.  It leaves you open to subtle and hidden bugs
+    where you \emph{think} you're changing a value and you actually aren't.
+\item Avoid too many globals, especially if across multiple files.  If you have
+    to then use accessor functions like I've done with \ident{get\_age}.  This
+    doesn't apply to constants, since those are read-only.  I'm talking about
+    variables like \ident{THE\_SIZE}.  If you want people to modify or set this,
+    then make accessor functions.
+\item When in doubt, put it on the stack.  Don't rely on the semantics of the
+    stack or specialized locations and instead just create things with
+    \ident{malloc}.
+\item Don't use function static variables like I did in \func{update\_ratio}.
+    They're rarely useful and end up being a huge pain when you need to make
+    your code concurrent in threads.  They are also hard as hell to find compared
+    to a well done global variable.
+\item Avoid reusing function parameters as it's confusing whether you're 
+    just reusing it or if you think you're changing the \emph{caller's}
+    version of it.
+\end{enumerate}
+
+As with all things, these rules can be broken when it's practical.  In fact,
+I guarantee you'll run into code that breaks all of these rules and is perfectly
+fine.  The constraints of different platforms makes it necessary sometimes.
 
 \section{How To Break It}
 
+For this exercise, breaking the program involves trying to access or change
+things you can't:
+
+\begin{enumerate}
+\item Try to directly access variables in \file{ex22.c} from \file{ex22\_main.c}
+    that you think you can't.  For example, you can't get at \ident{ratio}
+    inside \func{update\_ratio}? What if you had a pointer to it?
+\item Ditch the \ident{extern} declaration in \file{ex22.h} to see what you
+    get for errors or warnings.
+\item Add \ident{static} or \ident{const} specifiers to different variables
+    and then try to change them.
+\end{enumerate}
+
 
 \section{Extra Credit}
+
+\begin{enumerate}
+\item Research the concept of "pass by value" vs. "pass by reference".  Write an
+    example of both.
+\item Use pointers to gain access to things you shouldn't have access to.
+\item Use valgrind to see what this kind of access looks like when you 
+    do it wrong.
+\item Write a recursive function that causes a stack overflow.  Don't know
+    what a recursive function is?  Try calling \func{scope\_demo} at the
+    bottom of \func{scope\_demo} itself so that it loops.
+\item Rewrite the \file{Makefile} so that it can build this.
+\end{enumerate}
 
