@@ -1,17 +1,140 @@
+
+
 \chapter{Exercise 24: Input, Output, Files}
 
-You've been using \ident{printf} to print things, and that's great
-and all, but you need more.  In this exercise you'll learn about 
-getting input from the terminal and then we'll cover files.
+You've been using \ident{printf} to print things, and that's great and all, but
+you need more.  In this exercise program you're using the functions
+\func{fscanf} and \func{fgets} to build information about a person in a
+structure.  After this simple introduction to reading input, you'll get
+a full list of the functions that C has for I/O.  Some of these you've
+already seen and used, so this will be another memorization exercise.
+
+\begin{code}{ex24.c}
+<< d['code/ex24.c|pyg|l'] >>
+\end{code}
+
+This program is deceptively simple, and introduces a function called
+\func{fscanf} which is the "file scanf".  The \func{scanf} family of
+functions are the inverse of the \func{printf} versions.  Where 
+\func{printf} printed out data based on a format, \func{scanf} reads
+(or scans) input based on a format.
+
+There's nothing original in the beginning of the file, so here's what
+the \func{main} is doing:
+
+\begin{description}
+\item[24-28] Set up some variables we'll need.
+\item[30-32] Get your first name using the \func{fgets} function, which reads a
+    string from the input (in this case \ident{stdin}) but makes sure it
+    doesn't overflow the given buffer.
+\item[34-36] Same thing for \ident{you.last\_name}, again using \func{fgets}.
+\item[38-39] Uses \func{fscanf} to read an integer from \func{stdin} and put it
+    into \ident{you.age}.  You can see that the same format string is used
+    as \ident{printf} to print an integer.  You should also see that you have
+    to give the \emph{address} of \ident{you.age} so that \ident{fscanf} has
+    a pointer to it and can modify it.  This is a good example of using a
+    pointer to a piece of data as an "out parameter".
+\item[41-45] Print out all the options available for eye color, with a matching
+    number that works with the \ident{EyeColor} enum above.
+\item[47-50] Using \func{fscanf} again, get a number for the \ident{you.eyes}, 
+    but make sure the input is valid.  This is important because someone can
+    enter a value outside the \ident{EYE\_COLOR\_NAMES} array and cause a 
+    segfault.
+\item[52-53] Get how much you make as a \ident{float} for the \ident{you.income}.
+\item[55-61] Print everything out so you can see if you have it right.  Notice
+    that \ident{EYE\_COLOR\_NAMES} is used to print out what the \ident{EyeColor}
+    enum is actually called.
+\end{description}
 
 
 \section{What You Should See}
 
+When you run this program you should see your inputs being properly converted.
+Make sure you try to give it bogus input too so you can see how it protects
+against the input.
+
+\begin{code}{ex24 output}
+\begin{lstlisting}
+<< d['code/ex24.out|dexy'] >>
+\end{lstlisting}
+\end{code}
+
 
 \section{How To Break It}
+
+This is all fine and good, but the real important part of this exercise is
+how \func{scanf} actually sucks.  It's fine for simple conversion of numbers,
+but fails for strings because it's difficult to tell scanf how big a buffer
+is before you read.  There's also a problem with a function like \func{gets}
+(not \func{fgets}, the non-f version) which we avoided.  That function has
+no idea how big the input buffer is at all and will just trash your program.
+
+To demonstrate the problems with \func{fscanf} and strings, change the lines
+that use \func{fgets} so they are \verb|fscanf(stdin, "%50s", you.first_name)|
+and then try to use it again.  Notice it seems to read too much and then 
+eat your enter key?  This doesn't do what you think it does, and really
+rather than deal with weird \func{scanf} issues, just use \func{fgets}.
+
+Next, change the \func{fgets} to use \func{gets}, then bust out your
+\program{valgrind} and do this:  \verb|valgrind ./ex24 < /dev/urandom|
+to feed random garbage into your program.  This is called "fuzzing"
+your program, and it is a good way to find input bugs.  In this case,
+you're feeding garbage from the \file{/dev/urandom} file, and then watching
+it crash.  On some platforms you may have to do this a few times, or even
+adjust the \ident{MAX\_DATA} define so it's small enough.
+
+The \func{gets} function is so bad that some platforms actually warn you
+when the \emph{program} runs that you're using \func{gets}.  You should
+never use this function, ever.
+
+Finally, take the input for \ident{you.eyes} and remove the check that the
+number given is within the right range.  Then feed it bad numbers like -1 or
+1000.  Do this under Valgrind too so you can see what happens.
+
+\section{The I/O Functions}
+
+This is a short list of various I/O functions that you should look up and
+create index cards that have the function name, what it does, and all the
+variants similar to it.
+
+\begin{enumerate}
+\item fscanf
+\item fgets
+\item fopen
+\item freopen
+\item fdopen
+\item fclose
+\item fcloseall
+\item fgetpos
+\item fseek
+\item ftell
+\item rewind
+\item fprintf
+\item fwrite
+\item fread
+\end{enumerate}
+
+Go through these and memorize the different variants and what they do.  For example,
+for the card on \func{fscanf} you'll have \func{scanf}, \func{sscanf}, \func{vscanf},
+etc. and then what each of those do on the back.
+
+Finally, to get the information you need for these cards, use \program{man} to
+read the help for it.  For example, the page for \func{fscanf} comes from 
+\verb|man fscanf|.
 
 
 \section{Extra Credit}
 
-
+\begin{enumerate}
+\item Rewrite this to not use \func{fscanf} at all.  You'll need to use
+    functions like \func{atoi} to convert the input strings to numbers.
+\item Change this to use plain \func{scanf} instead of \func{fscanf} to
+    see what the difference is.
+\item Fix it so that the input names get stripped of the trailing newline
+    characters and any whitespace.
+\item Use \ident{scanf} to write a function that reads a character at a time
+    and files in the names but doesn't go past the end.  Make this function
+    generic so it can take a size for the string, and make sure you end
+    the string with \verb|'\0'| no matter what.
+\end{enumerate}
 

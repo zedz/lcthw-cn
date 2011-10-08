@@ -1,0 +1,20 @@
+$ make ex24
+cc -Wall -g -DNDEBUG    ex24.c   -o ex24
+$ ./ex24
+What's your First Name? Zed
+What's your Last Name? Shaw
+How old are you? 37
+What color are your eyes:
+1) Blue
+2) Green
+3) Brown
+4) Black
+5) Other
+> 1
+How much do you make an hour? 1.2345
+----- RESULTS -----
+First Name: Zed
+Last Name: Shaw
+Age: 37
+Eyes: Blue
+Income: 1.234500
