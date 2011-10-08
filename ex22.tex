@@ -122,17 +122,17 @@ The rest of the \file{ex22\_main.c} then demonstrates all of these by
 manipulating and printing them out:
 
 \begin{description}
-\item[26] Prints out the current values of \ident{MY\_NAME} and gets
+\item[ex22\_main.c:26] Prints out the current values of \ident{MY\_NAME} and gets
     \ident{THE\_AGE} from \file{ex22.c} using the accessor function
     \func{get\_age}.
-\item[27-30] Uses \func{set\_age} in \file{ex22.c} to change \ident{THE\_AGE}
+\item[ex22\_main.c:27-30] Uses \func{set\_age} in \file{ex22.c} to change \ident{THE\_AGE}
     and then print it out.
-\item[33-39] Then I do the same thing to \ident{THE\_SIZE} from \file{ex22.c},
+\item[ex22\_main.c:33-39] Then I do the same thing to \ident{THE\_SIZE} from \file{ex22.c},
     but this time I'm accessing it directly, and also demonstrating that it's
     actually changing in that file by printing it here and with \func{print\_size}.
-\item[42-44] Show how the static variable \ident{ratio} inside \func{update\_ratio}
+\item[ex22\_main.c:42-44] Show how the static variable \ident{ratio} inside \func{update\_ratio}
     is maintained between function calls.
-\item[46-51] Finally running \func{scope\_demo} a few times so you can see
+\item[ex22\_main.c:46-51] Finally running \func{scope\_demo} a few times so you can see
     the scope in action.  Big thing to notice is that the local \ident{count}
     variable remains unchanged.  You \emph{must} get that passing in a variable
     like this will not let you change it in the function.  To do that you need
