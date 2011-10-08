@@ -23,25 +23,25 @@ There's nothing original in the beginning of the file, so here's what
 the \func{main} is doing:
 
 \begin{description}
-\item[24-28] Set up some variables we'll need.
-\item[30-32] Get your first name using the \func{fgets} function, which reads a
+\item[ex24.c:24-28] Set up some variables we'll need.
+\item[ex24.c:30-32] Get your first name using the \func{fgets} function, which reads a
     string from the input (in this case \ident{stdin}) but makes sure it
     doesn't overflow the given buffer.
-\item[34-36] Same thing for \ident{you.last\_name}, again using \func{fgets}.
-\item[38-39] Uses \func{fscanf} to read an integer from \func{stdin} and put it
+\item[ex24.c:34-36] Same thing for \ident{you.last\_name}, again using \func{fgets}.
+\item[ex24.c:38-39] Uses \func{fscanf} to read an integer from \func{stdin} and put it
     into \ident{you.age}.  You can see that the same format string is used
     as \ident{printf} to print an integer.  You should also see that you have
     to give the \emph{address} of \ident{you.age} so that \ident{fscanf} has
     a pointer to it and can modify it.  This is a good example of using a
     pointer to a piece of data as an "out parameter".
-\item[41-45] Print out all the options available for eye color, with a matching
+\item[ex24.c:41-45] Print out all the options available for eye color, with a matching
     number that works with the \ident{EyeColor} enum above.
-\item[47-50] Using \func{fscanf} again, get a number for the \ident{you.eyes}, 
+\item[ex24.c:47-50] Using \func{fscanf} again, get a number for the \ident{you.eyes}, 
     but make sure the input is valid.  This is important because someone can
     enter a value outside the \ident{EYE\_COLOR\_NAMES} array and cause a 
     segfault.
-\item[52-53] Get how much you make as a \ident{float} for the \ident{you.income}.
-\item[55-61] Print everything out so you can see if you have it right.  Notice
+\item[ex24.c:52-53] Get how much you make as a \ident{float} for the \ident{you.income}.
+\item[ex24.c:55-61] Print everything out so you can see if you have it right.  Notice
     that \ident{EYE\_COLOR\_NAMES} is used to print out what the \ident{EyeColor}
     enum is actually called.
 \end{description}
@@ -64,7 +64,7 @@ against the input.
 
 This is all fine and good, but the real important part of this exercise is
 how \func{scanf} actually sucks.  It's fine for simple conversion of numbers,
-but fails for strings because it's difficult to tell scanf how big a buffer
+but fails for strings because it's difficult to tell \func{scanf} how big a buffer
 is before you read.  There's also a problem with a function like \func{gets}
 (not \func{fgets}, the non-f version) which we avoided.  That function has
 no idea how big the input buffer is at all and will just trash your program.
