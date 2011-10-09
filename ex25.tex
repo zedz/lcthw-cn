@@ -6,14 +6,89 @@ the header \file{stdarg.h} and with them you can create nicer interfaces to
 your library.  They are handy for certain types of "builder" functions,
 formatting functions, and anything that takes variable arguments.
 
+Understanding "vararg functions" is \emph{not} essential to creating C programs.
+I think I've used it maybe a 20 times in my code in the years I've been
+programming.  However, knowing how a vararg function works will help you
+debug the ones you use and gives you more understanding of the computer.
+
+\begin{code}{ex25.c}
+<< d['code/ex25.c|pyg|l'] >>
+\end{code}
+
+This program is similar to the previous exercise, except I have written
+my own \func{scanf} style function that handles strings the way I want.
+The main function should be clear to you, as well as the two functions
+\func{read\_string} and \func{read\_int} since they do nothing new.
+
+The varargs function is called \func{read\_scan} and it does the same
+thing that \func{scanf} is doing using the \ident{va\_list} data
+structure and it's supporting macros and functions.  Here's how it works:
+
+\begin{enumerate}
+\item I set as the last parameter of the function the keyword \verb|...|
+    which indicates to C that this function will take any number of arguments
+    after the \ident{fmt} argument.  I could put many other arguments before
+    this, but I can't put anymore after this.
+\item After setting up some variables, I create a \ident{va\_list} variable
+    and initialize it with \ident{va\_start}.  This configures the gear
+    in \file{stdarg.h} that handles variable arguments.
+\item I then use a \ident{for-loop} to loop through the format string
+    \ident{fmt} and process the same kind of formats that \func{scanf}
+    has, but much simpler.  I just have integers, characters, and strings.
+\item When I hit a format, I use the \ident{switch-statement} to figure out
+    what to do.
+\item Now, to \emph{get} a variable from the \ident{va\_list argp} I use the
+    macro \ident{va\_arg(argp, TYPE)} where TYPE is the exact type of what
+    I will assign this function parameter to.  The downside to this design
+    is you're flying blind, so if you don't have enough parameters then
+    oh well, you'll most likely crash.
+\item The interesting difference from \func{scanf} is I'm assuming that people
+    want \func{read\_scan} to create the strings it reads when it hits a
+    \ident{'s'} format sequence.  When you give this sequence, the function
+    takes two parameters off the \ident{va\_list argp} stack: the max function
+    size to read, and the output character string pointer.  Using that information
+    it just runs \func{read\_string} to do the real work.
+\item This makes \func{read\_scan} more consistent than \func{scanf} since you
+    \emph{always} give an address-of \verb|\&| on variables to have them set
+    appropriately.
+\item Finally, if it encounters a character that's not in the format, it just reads
+    one char to skip it.  It doesn't care what that char is, just that it should
+    skip it.
+\end{enumerate}
+
 
 \section{What You Should See}
 
+When you run this one it's similar to the last one:
+
+\begin{code}{ex25.out}
+\begin{lstlisting}
+<< d['code/ex25.out|dexy'] >>
+\end{lstlisting}
+\end{code}
 
 \section{How To Break It}
 
+This program should be more robust against buffer overflows, but it doesn't
+handle the formatted input as well as \func{scanf}.  To try breaking this,
+change the code that you forget to pass in the initial size for '\%s' formats.
+Try also giving it more data than \ident{MAX\_DATA}, and then see how not
+using \func{calloc} in \func{read\_string} changes how it works.  Finally,
+there's a problem that fgets eats the newlines, so try to fix that using
+\func{fgetc} but leave out the '\\0' that ends the string.
 
 \section{Extra Credit}
 
-
+\begin{enumerate}
+\item Make double and triple sure that you know what each of the \ident{out\_}
+    variables are doing.  Most important is \ident{out\_string} and how it's
+    a pointer to a pointer, so getting when you're setting the pointer vs. the
+    contents is important.  Break down each of the 
+\item Write a similar function to \func{printf} that uses the varargs system
+    and rewrite \func{main} to use it.
+\item As usual, read the man page on all of this so you know what it does
+    on your platform.  Some platforms will use macros and others use
+    functions, and some have these do nothing.  It all depends on the 
+    compiler and the platform you use.
+\end{enumerate}
 
