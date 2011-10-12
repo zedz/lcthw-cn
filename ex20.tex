@@ -81,7 +81,7 @@ Yes, that's it, and here's what every line does:
 \item[dbg.h:1-2] The usual defense against accidentally including the file
     twice, which you saw in the last exercise.
 \item[dbg.h:4-6] Includes for the functions that these macros need.
-\item[dbg.h:8] The start of a \ident{\#ifdef} which let's you recompile your
+\item[dbg.h:8] The start of a \ident{\#ifdef} which lets you recompile your
     program so that all the debug log messages are removed.
 \item[dbg.h:9] If you compile with \ident{NDEBUG} defined, then "no debug" messages
     will remain.  You can see in this case the \ident{\#define debug()} is just
