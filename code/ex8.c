@@ -15,7 +15,7 @@ int main(int argc, char *argv[])
             sizeof(areas));
     printf("The number of ints in areas: %ld\n", 
             sizeof(areas) / sizeof(int));
-    printf("The first area is %d, then 2nd %d.\n",
+    printf("The first area is %d, the 2nd %d.\n",
             areas[0], areas[1]);
 
     printf("The size of a char: %ld\n", sizeof(char));
