@@ -188,7 +188,7 @@ so you avoid bugs related to the stack:
     doesn't apply to constants, since those are read-only.  I'm talking about
     variables like \ident{THE\_SIZE}.  If you want people to modify or set this,
     then make accessor functions.
-\item When in doubt, put it on the stack.  Don't rely on the semantics of the
+\item When in doubt, put it on the heap.  Don't rely on the semantics of the
     stack or specialized locations and instead just create things with
     \ident{malloc}.
 \item Don't use function static variables like I did in \func{update\_ratio}.
