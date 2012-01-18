@@ -1,0 +1,51 @@
+$ make ex19
+cc -Wall -g   -c -o object.o object.c
+cc -Wall -g    ex19.c object.o   -o ex19
+$ ./ex19
+You enter the The great Hall.
+
+> l
+You can go:
+NORTH
+
+> n
+You go north, into:
+The throne room.
+
+> l
+You can go:
+SOUTH
+EAST
+WEST
+
+> e
+You go east, into:
+Kitchen, you have the knife now.
+
+> w
+You go west, into:
+The throne room.
+
+> s
+You go south, into:
+The great Hall.
+
+> n
+You go north, into:
+The throne room.
+
+> w
+You go west, into:
+The arena, with the minotaur.
+
+> a
+You attack The evil minotaur!
+It is still alive.
+
+> a
+You attack The evil minotaur!
+It is dead!
+
+> ^D
+Giving up? You suck.
+$ 

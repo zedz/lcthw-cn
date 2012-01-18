@@ -1,0 +1,20 @@
+$ make ex10
+cc -Wall -g    ex10.c   -o ex10
+$ ./ex10 i am a bunch of arguments
+arg 1: i
+arg 2: am
+arg 3: a
+arg 4: bunch
+arg 5: of
+arg 6: arguments
+state 0: California
+state 1: Oregon
+state 2: Washington
+state 3: Texas
+$ 
+$ ./ex10
+state 0: California
+state 1: Oregon
+state 2: Washington
+state 3: Texas
+$ 

@@ -1,0 +1,14 @@
+$ make ex20
+cc -Wall -g -DNDEBUG    ex20.c   -o ex20
+$ ./ex20 test
+[ERROR] (ex20.c:16: errno: None) I believe everything is broken.
+[ERROR] (ex20.c:17: errno: None) There are 0 problems in space.
+[WARN] (ex20.c:22: errno: None) You can safely ignore this.
+[WARN] (ex20.c:23: errno: None) Maybe consider looking at: /etc/passwd.
+[INFO] (ex20.c:28) Well I did something mundane.
+[INFO] (ex20.c:29) It happened 1.300000 times today.
+[ERROR] (ex20.c:38: errno: No such file or directory) Failed to open test.
+[INFO] (ex20.c:57) It worked.
+[ERROR] (ex20.c:60: errno: None) I shouldn't run.
+[ERROR] (ex20.c:74: errno: None) Out of memory.
+

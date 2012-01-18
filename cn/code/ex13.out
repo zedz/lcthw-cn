@@ -1,0 +1,23 @@
+$ make ex13
+cc -Wall -g    ex13.c   -o ex13
+$ ./ex13
+ERROR: You need one argument.
+$
+$ ./ex13 Zed
+0: Z is not a vowel
+1: 'E'
+2: d is not a vowel
+$
+$ ./ex13 Zed Shaw
+ERROR: You need one argument.
+$
+$ ./ex13 "Zed Shaw"
+0: Z is not a vowel
+1: 'E'
+2: d is not a vowel
+3:   is not a vowel
+4: S is not a vowel
+5: h is not a vowel
+6: 'A'
+7: w is not a vowel
+$

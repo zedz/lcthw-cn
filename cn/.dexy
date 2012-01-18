@@ -1,0 +1,28 @@
+{
+    "*.tex|jinja" : { "allinputs" : "true" },
+    "*.py|pyg|l": {
+        "pygments": {
+            "linenos": "true"
+        }
+    },
+    "*.c|pyg|l": {
+        "pygments": {
+            "linenos": "true"
+        }
+    },
+    "*.h|pyg|l": {
+        "pygments": {
+            "linenos": "true"
+        }
+    },
+    "*.sh|pyg|l": {
+        "pygments": {
+            "linenos": "true"
+        }
+    },
+    "*.conf|dexy": {},
+    "*Makefile|dexy": {},
+    "*.out|dexy": {},
+    "*.css|jinja" : {  },
+    "*.cfg|jinja" : {  }
+}

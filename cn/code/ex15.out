@@ -1,0 +1,27 @@
+$ make ex15
+cc -Wall -g    ex15.c   -o ex15
+$ ./ex15
+Alan has 23 years alive.
+Frank has 43 years alive.
+Mary has 12 years alive.
+John has 89 years alive.
+Lisa has 2 years alive.
+---
+Alan is 23 years old.
+Frank is 43 years old.
+Mary is 12 years old.
+John is 89 years old.
+Lisa is 2 years old.
+---
+Alan is 23 years old again.
+Frank is 43 years old again.
+Mary is 12 years old again.
+John is 89 years old again.
+Lisa is 2 years old again.
+---
+Alan lived 23 years so far.
+Frank lived 43 years so far.
+Mary lived 12 years so far.
+John lived 89 years so far.
+Lisa lived 2 years so far.
+$

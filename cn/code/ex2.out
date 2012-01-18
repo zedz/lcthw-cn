@@ -1,0 +1,7 @@
+$ make clean
+rm -f ex1
+$ make ex1
+cc -Wall -g    ex1.c   -o ex1
+ex1.c: In function 'main':
+ex1.c:3: warning: implicit declaration of function 'puts'
+$

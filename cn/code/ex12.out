@@ -1,0 +1,13 @@
+$ make ex12
+cc -Wall -g    ex12.c   -o ex12
+$ ./ex12
+You only have one argument. You suck.
+$ ./ex12 one
+Here's your arguments:
+./ex12 one 
+$ ./ex12 one two
+Here's your arguments:
+./ex12 one two 
+$ ./ex12 one two three
+You have too many arguments. You suck.
+$
