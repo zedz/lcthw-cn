@@ -49,7 +49,7 @@ void *Object_new(size_t size, Object proto, char *description)
 
     // this seems weird, but we can make a struct of one size,
     // then point a different pointer at it to "cast" it
-    Object *el = calloc(size, 1);
+    Object *el = calloc(1, size);
     *el = proto;
 
     // copy the description over
