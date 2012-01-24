@@ -29,7 +29,7 @@ used like the functions they point to but with a different name.
 \begin{code}{Using A Raw Function Pointer}
 \begin{lstlisting}
     int (*tester)(int a, int b) = sorted_order;
-    printf("TEST: %d is same as %d\n", tester(2, 3));
+    printf("TEST: %d is same as %d\n", tester(2, 3), sorted_order(2, 3)); 
 \end{lstlisting}
 \end{code}
 
