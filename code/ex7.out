@@ -3,7 +3,7 @@ cc -Wall -g    ex7.c   -o ex7
 $ ./ex7
 You have 100 bugs at the imaginary rate of 1.200000.
 The entire universe has 1073741824 bugs.
-You are expected to have 120.000005 bugs.
+You are expected to have 120.000000 bugs.
 That is only a 1.117587e-07 portion of the universe.
 Which means you should care 0%.
 $
