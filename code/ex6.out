@@ -3,7 +3,7 @@ cc -Wall -g    ex6.c   -o ex6
 $ ./ex6
 You are 100 miles away.
 You have 2.345000 levels of power.
-You have 56789.453125 awesome super powers.
+You have 56789.453200 awesome super powers.
 I have an initial A.
 I have a first name Zed.
 I have a last name Shaw.
