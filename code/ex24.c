@@ -36,7 +36,8 @@ int main(int argc, char *argv[])
     check(in != NULL, "Failed to read last name.");
 
     printf("How old are you? ");
-    fscanf(stdin, "%d", &you.age);
+    int rc = fscanf(stdin, "%d", &you.age);
+    check(rc > 0, "You have to enter a number.");
 
     printf("What color are your eyes:\n");
     for(i = 0; i <= OTHER_EYES; i++) {
@@ -45,12 +46,15 @@ int main(int argc, char *argv[])
     printf("> ");
 
     int eyes = -1;
-    fscanf(stdin, "%d", &eyes);
-    check(eyes <= OTHER_EYES && eyes > 0, "Do it right, that's not an option.");
+    rc = fscanf(stdin, "%d", &eyes);
+    check(rc > 0, "You have to enter a number.");
+
     you.eyes = eyes - 1;
+    check(you.eyes <= OTHER_EYES && you.eyes >= 0, "Do it right, that's not an option.");
 
     printf("How much do you make an hour? ");
-    fscanf(stdin, "%f", &you.income);
+    rc = fscanf(stdin, "%f", &you.income);
+    check(rc > 0, "Enter a floating point number.");
 
     printf("----- RESULTS -----\n");
 
